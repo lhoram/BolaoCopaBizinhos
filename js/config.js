@@ -30,28 +30,49 @@ const CONFIG = {
 
   roundOrder: ["r32", "oitavas", "quartas", "semi", "terceiro", "final"],
 
+  // Grupos Copa 2026 (referência para o admin)
+  // Após a fase de grupos (termina 27/Jun), substitua "1º Grupo X" pelo time classificado real.
+  groups: {
+    A: ["México", "África do Sul", "Coreia do Sul", "Rep. Tcheca"],
+    B: ["Canadá", "Bósnia e Herz.", "Catar", "Suíça"],
+    C: ["Brasil", "Marrocos", "Haiti", "Escócia"],
+    D: ["Estados Unidos", "Paraguai", "Austrália", "Turquia"],
+    E: ["Alemanha", "Curaçau", "Costa do Marfim", "Equador"],
+    F: ["Holanda", "Japão", "Suécia", "Tunísia"],
+    G: ["Bélgica", "Egito", "Irã", "Nova Zelândia"],
+    H: ["Espanha", "Cabo Verde", "Arábia Saudita", "Uruguai"],
+    I: ["França", "Senegal", "Iraque", "Noruega"],
+    J: ["Argentina", "Argélia", "Áustria", "Jordânia"],
+    K: ["Portugal", "Rep. D. Congo", "Uzbequistão", "Colômbia"],
+    L: ["Inglaterra", "Croácia", "Gana", "Panamá"],
+  },
+
   // Jogos
   // scoreA/scoreB: null = não jogado, número = placar nos 90min
   // winner: null | "A" | "B"
   // extraTime: true se decidido na prorrogação (bônus de placar exato não conta)
+  // ADMIN: após 27/Jun substitua "1º Grupo X" / "2º Grupo X" pelos times reais classificados
   matches: {
     r32: [
-      { id:"r32-1",  teamA:"A definir", teamB:"A definir", scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-06-28", time:"12:00", venue:"MetLife Stadium, Nova York" },
-      { id:"r32-2",  teamA:"A definir", teamB:"A definir", scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-06-28", time:"15:00", venue:"AT&T Stadium, Dallas" },
-      { id:"r32-3",  teamA:"A definir", teamB:"A definir", scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-06-28", time:"19:00", venue:"SoFi Stadium, Los Angeles" },
-      { id:"r32-4",  teamA:"A definir", teamB:"A definir", scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-06-28", time:"22:00", venue:"Levi's Stadium, São Francisco" },
-      { id:"r32-5",  teamA:"A definir", teamB:"A definir", scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-06-29", time:"12:00", venue:"Estadio Azteca, Cidade do México" },
-      { id:"r32-6",  teamA:"A definir", teamB:"A definir", scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-06-29", time:"15:00", venue:"BMO Field, Toronto" },
-      { id:"r32-7",  teamA:"A definir", teamB:"A definir", scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-06-29", time:"19:00", venue:"Lincoln Financial, Filadélfia" },
-      { id:"r32-8",  teamA:"A definir", teamB:"A definir", scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-06-29", time:"22:00", venue:"Arrowhead Stadium, Kansas City" },
-      { id:"r32-9",  teamA:"A definir", teamB:"A definir", scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-06-30", time:"12:00", venue:"Allegiant Stadium, Las Vegas" },
-      { id:"r32-10", teamA:"A definir", teamB:"A definir", scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-06-30", time:"15:00", venue:"Gillette Stadium, Boston" },
-      { id:"r32-11", teamA:"A definir", teamB:"A definir", scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-06-30", time:"19:00", venue:"Hard Rock Stadium, Miami" },
-      { id:"r32-12", teamA:"A definir", teamB:"A definir", scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-06-30", time:"22:00", venue:"Lumen Field, Seattle" },
-      { id:"r32-13", teamA:"A definir", teamB:"A definir", scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-07-01", time:"12:00", venue:"NRG Stadium, Houston" },
-      { id:"r32-14", teamA:"A definir", teamB:"A definir", scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-07-01", time:"15:00", venue:"Estadio Akron, Guadalajara" },
-      { id:"r32-15", teamA:"A definir", teamB:"A definir", scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-07-01", time:"19:00", venue:"BC Place, Vancouver" },
-      { id:"r32-16", teamA:"A definir", teamB:"A definir", scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-07-01", time:"22:00", venue:"Rose Bowl, Pasadena" },
+      // Cruzamentos fixos: 1º vs 2º de grupos opostos
+      { id:"r32-1",  teamA:"1º Grupo A", teamB:"2º Grupo B", scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-06-28", time:"12:00", venue:"MetLife Stadium, Nova York" },
+      { id:"r32-2",  teamA:"1º Grupo C", teamB:"2º Grupo D", scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-06-28", time:"15:00", venue:"AT&T Stadium, Dallas" },
+      { id:"r32-3",  teamA:"1º Grupo E", teamB:"2º Grupo F", scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-06-28", time:"19:00", venue:"SoFi Stadium, Los Angeles" },
+      { id:"r32-4",  teamA:"1º Grupo G", teamB:"2º Grupo H", scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-06-28", time:"22:00", venue:"Levi's Stadium, São Francisco" },
+      { id:"r32-5",  teamA:"1º Grupo I", teamB:"2º Grupo J", scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-06-29", time:"12:00", venue:"Estadio Azteca, Cidade do México" },
+      { id:"r32-6",  teamA:"1º Grupo K", teamB:"2º Grupo L", scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-06-29", time:"15:00", venue:"BMO Field, Toronto" },
+      // Cruzamentos: 1º vs Melhor 3º classificado
+      { id:"r32-7",  teamA:"1º Grupo B", teamB:"Melhor 3º",  scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-06-29", time:"19:00", venue:"Lincoln Financial, Filadélfia" },
+      { id:"r32-8",  teamA:"1º Grupo D", teamB:"Melhor 3º",  scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-06-29", time:"22:00", venue:"Arrowhead Stadium, Kansas City" },
+      { id:"r32-9",  teamA:"1º Grupo F", teamB:"Melhor 3º",  scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-06-30", time:"12:00", venue:"Allegiant Stadium, Las Vegas" },
+      { id:"r32-10", teamA:"1º Grupo H", teamB:"Melhor 3º",  scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-06-30", time:"15:00", venue:"Gillette Stadium, Boston" },
+      { id:"r32-11", teamA:"1º Grupo J", teamB:"Melhor 3º",  scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-06-30", time:"19:00", venue:"Hard Rock Stadium, Miami" },
+      { id:"r32-12", teamA:"1º Grupo L", teamB:"Melhor 3º",  scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-06-30", time:"22:00", venue:"Lumen Field, Seattle" },
+      // Cruzamentos: 2º vs Melhor 3º classificado
+      { id:"r32-13", teamA:"2º Grupo A", teamB:"Melhor 3º",  scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-07-01", time:"12:00", venue:"NRG Stadium, Houston" },
+      { id:"r32-14", teamA:"2º Grupo C", teamB:"Melhor 3º",  scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-07-01", time:"15:00", venue:"Estadio Akron, Guadalajara" },
+      { id:"r32-15", teamA:"2º Grupo E", teamB:"Melhor 3º",  scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-07-01", time:"19:00", venue:"BC Place, Vancouver" },
+      { id:"r32-16", teamA:"2º Grupo G", teamB:"Melhor 3º",  scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-07-01", time:"22:00", venue:"Rose Bowl, Pasadena" },
     ],
     oitavas: [
       { id:"oit-1", teamA:"Venc. R32-1",  teamB:"Venc. R32-2",  scoreA:null, scoreB:null, winner:null, extraTime:false, date:"2026-07-04", time:"15:00", venue:"A definir" },
