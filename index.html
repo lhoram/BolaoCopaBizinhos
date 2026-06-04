@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Bolão do mata-mata da Copa do Mundo 2026 com os Bizinhos">
+  <title id="page-title">Bolão Copa Bizinhos 2026</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ── Navbar ──────────────────────────────────────────────────── -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="#top" class="nav-brand">
+        <img src="assets/trophy.svg" alt="" class="nav-icon" aria-hidden="true">
+        <span class="nav-brand-text">Bolão Bizinhos</span>
+      </a>
+      <ul class="nav-menu" role="list">
+        <li><a href="#palpites"   class="nav-link">Palpites</a></li>
+        <li><a href="#ranking"    class="nav-link">Ranking</a></li>
+        <li><a href="#chaveamento" class="nav-link">Chaveamento</a></li>
+        <li><a href="#regras"     class="nav-link">Regras</a></li>
+      </ul>
+      <button class="nav-burger" id="nav-burger"
+              aria-label="Abrir menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
+      <a href="#palpites"    class="nav-drawer-link">⚽ Palpites</a>
+      <a href="#ranking"     class="nav-drawer-link">🏆 Ranking</a>
+      <a href="#chaveamento" class="nav-drawer-link">📊 Chaveamento</a>
+      <a href="#regras"      class="nav-drawer-link">📜 Regras</a>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- ── Hero ──────────────────────────────────────────────────── -->
+    <section class="hero" id="top">
+      <div class="hero-bg" aria-hidden="true">
+        <div id="stars-layer" class="stars-layer"></div>
+        <div class="hero-glow"></div>
+      </div>
+
+      <div class="container hero-content">
+        <div class="hero-eyebrow">Copa do Mundo 2026</div>
+
+        <img src="assets/trophy.svg" alt="Troféu Copa Bizinhos"
+             class="hero-trophy" id="hero-trophy">
+
+        <h1 class="hero-title">
+          Bolão <span class="text-gold">Copa<br>Bizinhos</span>
+        </h1>
+
+        <p class="hero-desc">Mata-mata &nbsp;·&nbsp; Palpites &nbsp;·&nbsp; Rivalidade saudável</p>
+
+        <div class="countdown-wrap">
+          <p class="cd-label" id="cd-label">Carregando...</p>
+          <div class="countdown">
+            <div class="cd-box">
+              <span class="cd-num" id="cd-d">00</span>
+              <span class="cd-lbl">dias</span>
+            </div>
+            <span class="cd-colon" aria-hidden="true">:</span>
+            <div class="cd-box">
+              <span class="cd-num" id="cd-h">00</span>
+              <span class="cd-lbl">horas</span>
+            </div>
+            <span class="cd-colon" aria-hidden="true">:</span>
+            <div class="cd-box">
+              <span class="cd-num" id="cd-m">00</span>
+              <span class="cd-lbl">min</span>
+            </div>
+            <span class="cd-colon" aria-hidden="true">:</span>
+            <div class="cd-box">
+              <span class="cd-num" id="cd-s">00</span>
+              <span class="cd-lbl">seg</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-ctas">
+          <a href="#palpites" class="btn btn-gold">⚽ Fazer Palpite</a>
+          <a href="#ranking"  class="btn btn-outline">🏆 Ver Ranking</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Palpites ───────────────────────────────────────────────── -->
+    <section class="section" id="palpites">
+      <div class="container">
+        <div class="section-hd">
+          <span class="tag">📋 Formulário</span>
+          <h2>Fazer Palpite</h2>
+          <p>Registre seus palpites antes do prazo de cada rodada.<br>
+             Após o prazo, o formulário é fechado automaticamente.</p>
+        </div>
+        <div id="palpites-content">
+          <!-- Preenchido pelo app.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Ranking ────────────────────────────────────────────────── -->
+    <section class="section bg-alt" id="ranking">
+      <div class="container">
+        <div class="section-hd">
+          <span class="tag">🏆 Classificação</span>
+          <h2>Ranking</h2>
+          <p>Quem está na frente do bolão?</p>
+        </div>
+        <div id="ranking-content">
+          <!-- Preenchido pelo app.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Chaveamento ────────────────────────────────────────────── -->
+    <section class="section" id="chaveamento">
+      <div class="container">
+        <div class="section-hd">
+          <span class="tag">⚽ Mata-mata</span>
+          <h2>Chaveamento</h2>
+          <p>Copa do Mundo 2026 — Fase eliminatória completa</p>
+        </div>
+        <div id="bracket-content">
+          <!-- Preenchido pelo app.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Regras ─────────────────────────────────────────────────── -->
+    <section class="section bg-alt" id="regras">
+      <div class="container">
+        <div class="section-hd">
+          <span class="tag">📜 Regramento</span>
+          <h2>Regras</h2>
+          <p>Como funciona o Bolão Copa Bizinhos</p>
+        </div>
+        <div id="regras-content">
+          <!-- Preenchido pelo app.js -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Footer ────────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <img src="assets/trophy.svg" alt="" class="footer-icon" aria-hidden="true">
+        <div>
+          <div class="footer-title" id="footer-title">Bolão Copa Bizinhos</div>
+          <div class="footer-sub">Copa do Mundo 2026</div>
+        </div>
+      </div>
+      <nav class="footer-links" aria-label="Links do rodapé">
+        <a href="#palpites">Palpites</a>
+        <a href="#ranking">Ranking</a>
+        <a href="#chaveamento">Chaveamento</a>
+        <a href="#regras">Regras</a>
+      </nav>
+      <div class="footer-contact" id="footer-contact"></div>
+    </div>
+    <div class="footer-copy">
+      Feito com ❤️ para o grupo mais animado do bolão
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
