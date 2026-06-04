@@ -85,8 +85,10 @@ const CONFIG = {
   // ADMIN: adicione os participantes aqui e atualize os scores após cada rodada
   participants: [
     { name: "Odir",    emoji: "🧔", scores: { r32:0, oitavas:0, quartas:0, semi:0, terceiro:0, final:0 } },
-    { name: "Bizinho", emoji: "⚽", scores: { r32:0, oitavas:0, quartas:0, semi:0, terceiro:0, final:0 } },
-    { name: "Craque",  emoji: "🌟", scores: { r32:0, oitavas:0, quartas:0, semi:0, terceiro:0, final:0 } },
-    { name: "Torcedor",emoji: "📣", scores: { r32:0, oitavas:0, quartas:0, semi:0, terceiro:0, final:0 } },
+    { name: "Renata",  emoji: "👩", scores: { r32:0, oitavas:0, quartas:0, semi:0, terceiro:0, final:0 } },
+    { name: "João",    emoji: "👨", scores: { r32:0, oitavas:0, quartas:0, semi:0, terceiro:0, final:0 } },
+    { name: "Isabela", emoji: "👱‍♀️", scores: { r32:0, oitavas:0, quartas:0, semi:0, terceiro:0, final:0 } },
+    { name: "Wiliams", emoji: "🕺", scores: { r32:0, oitavas:0, quartas:0, semi:0, terceiro:0, final:0 } },
+    { name: "Wagner",  emoji: "🎯", scores: { r32:0, oitavas:0, quartas:0, semi:0, terceiro:0, final:0 } },
   ],
 };
