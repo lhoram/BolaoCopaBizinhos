@@ -123,9 +123,7 @@ function renderPalpites() {
     if (isCur && open) {
       badge = '🟢 Aberto';
       badgeClass = 'badge-open';
-      btn = hasUrl
-        ? `<a href="${form.url}" target="_blank" rel="noopener noreferrer" class="btn btn-gold btn-full">⚽ Fazer Palpite Agora</a>`
-        : `<div class="btn-disabled">🔗 Link do formulário em breve...</div>`;
+      btn = `<a href="palpite.html" class="btn btn-gold btn-full">⚽ Fazer Palpite Agora</a>`;
     } else if (isCur && !open) {
       badge = '🔴 Encerrado';
       badgeClass = 'badge-closed';
