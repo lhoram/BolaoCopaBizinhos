@@ -286,6 +286,11 @@ function renderBracket() {
       const sA     = played ? m.scoreA : '–';
       const sB     = played ? m.scoreB : '–';
 
+      const resLabel = {
+        extratime: { text: '⏱ Prorrogação', cls: 'match-res--et'  },
+        penalties:  { text: '🥅 Pênaltis',   cls: 'match-res--pen' },
+      }[m.resolution] || null;
+
       panelsHtml += `
         <div class="match-card${played ? ' match-card--played' : ''}">
           <div class="match-num">Jogo ${idx + 1}</div>
@@ -302,8 +307,8 @@ function renderBracket() {
           </div>
           <div class="match-meta">
             <span class="match-date">${formatDate(m.date)} · ${m.time}</span>
+            ${resLabel ? `<span class="match-res ${resLabel.cls}">${resLabel.text}</span>` : ''}
           </div>
-          ${m.extraTime ? '<span class="match-et">Prorrogação</span>' : ''}
           <div class="match-venue">${m.venue}</div>
         </div>
       `;
@@ -359,12 +364,13 @@ function renderRegras() {
 
   /* Rules list */
   const rules = [
-    { icon:'📋', title:'Palpites por rodada',    desc:'Um formulário Google Forms é aberto antes de cada fase com os times qualificados. Você palpita todos os jogos daquela rodada de uma vez.' },
-    { icon:'⏰', title:'Prazo improrrogável',     desc:'O formulário fecha no horário indicado. Palpites enviados após o prazo não são aceitos. Fique de olho nas notificações do grupo!' },
-    { icon:'⚽', title:'Como palpitar',           desc:'Para cada jogo você informa o placar ao final dos 90 minutos de tempo normal. Prorrogação e pênaltis não alteram o placar considerado.' },
-    { icon:'🏆', title:'Pontuação crescente',     desc:'Os pontos aumentam a cada fase: acertar uma Semifinal vale muito mais do que acertar a Rodada das 32. Quem subestimar as fases finais fica para trás.' },
-    { icon:'🤝', title:'Critério de desempate',   desc:'Em caso de empate total: 1º) mais placares exatos; 2º) mais vencedores corretos nas fases finais; 3º) ordem alfabética (só para não deixar empatado).' },
-    { icon:'📊', title:'Atualização do ranking',  desc:'O ranking é atualizado pelo admin após a apuração de cada rodada. Pode demorar um pouquinho — calma, a transparência está garantida.' },
+    { icon:'📋', title:'Palpites por rodada',      desc:'Um formulário Google Forms é aberto antes de cada fase com os times qualificados. Você palpita todos os jogos daquela rodada de uma vez.' },
+    { icon:'⏰', title:'Prazo improrrogável',       desc:'O formulário fecha no horário indicado. Palpites enviados após o prazo não são aceitos. Fique de olho nas notificações do grupo!' },
+    { icon:'⚽', title:'Como palpitar',             desc:'Para cada jogo você informa o placar ao final dos 90 minutos. Não é necessário prever prorrogação nem pênaltis — o palpite é sempre pelo placar do tempo normal.' },
+    { icon:'⏱', title:'Prorrogação & Pênaltis',    desc:'O bônus de placar exato é sempre pelo placar dos 90min. Se o jogo foi para prorrogação ou pênaltis, quem acertou o empate certo (ex: 1×1) ainda recebe o bônus. O vencedor vale pontos pelo time que efetivamente passou de fase.' },
+    { icon:'🏆', title:'Pontuação crescente',       desc:'Os pontos aumentam a cada fase: acertar uma Semifinal vale muito mais do que acertar a Rodada das 32. Quem subestimar as fases finais fica para trás.' },
+    { icon:'🤝', title:'Critério de desempate',     desc:'Em caso de empate total: 1º) mais placares exatos; 2º) mais vencedores corretos nas fases finais; 3º) ordem alfabética (só para não deixar empatado).' },
+    { icon:'📊', title:'Atualização do ranking',    desc:'O ranking é atualizado pelo admin após a apuração de cada rodada. Pode demorar um pouquinho — calma, a transparência está garantida.' },
   ];
 
   let rulesHtml = '<div class="regras-block"><h3 class="regras-subtitle">Regras Gerais</h3><div class="rules-grid">';
