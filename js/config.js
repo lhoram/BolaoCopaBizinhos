@@ -9,7 +9,7 @@ const CONFIG = {
 
   // Pontuação por rodada
   scoring: {
-    r32:      { label: "Rodada das 32",    shortLabel: "R32",   winner: 3,  exact: 2  },
+    r32:      { label: "16 avos de Final",  shortLabel: "16avos", winner: 3,  exact: 2  },
     oitavas:  { label: "Oitavas de Final", shortLabel: "Oitav", winner: 5,  exact: 3  },
     quartas:  { label: "Quartas de Final", shortLabel: "Qrtas", winner: 8,  exact: 5  },
     semi:     { label: "Semifinais",       shortLabel: "Semi",  winner: 12, exact: 7  },
