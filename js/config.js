@@ -60,10 +60,10 @@ const CONFIG = {
   matches: {
     r32: [
       // Chaveamento oficial Copa 2026 — 16 avos de final
-      { id:"r32-1",  teamA:"Coreia do Sul 🇰🇷", teamB:"Canadá 🇨🇦",       scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-28", time:"A definir", venue:"A definir" },
-      { id:"r32-2",  teamA:"Brasil 🇧🇷",          teamB:"Japão 🇯🇵",         scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-29", time:"A definir", venue:"NRG Stadium, Houston" },
-      { id:"r32-3",  teamA:"Alemanha 🇩🇪",        teamB:"Paraguai 🇵🇾",      scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-29", time:"A definir", venue:"A definir" },
-      { id:"r32-4",  teamA:"Holanda 🇳🇱",         teamB:"Marrocos 🇲🇦",      scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-29", time:"A definir", venue:"A definir" },
+      { id:"r32-1",  teamA:"Coreia do Sul 🇰🇷", teamB:"Canadá 🇨🇦",       scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-28", time:"16:00", venue:"SoFi Stadium, Los Angeles" },
+      { id:"r32-2",  teamA:"Brasil 🇧🇷",          teamB:"Japão 🇯🇵",         scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-29", time:"14:00", venue:"NRG Stadium, Houston" },
+      { id:"r32-3",  teamA:"Alemanha 🇩🇪",        teamB:"Paraguai 🇵🇾",      scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-29", time:"17:30", venue:"Gillette Stadium, Boston" },
+      { id:"r32-4",  teamA:"Holanda 🇳🇱",         teamB:"Marrocos 🇲🇦",      scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-29", time:"22:00", venue:"Estadio BBVA, Monterrey" },
       { id:"r32-5",  teamA:"Costa do Marfim 🇨🇮", teamB:"Noruega 🇳🇴",      scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-30", time:"A definir", venue:"A definir" },
       { id:"r32-6",  teamA:"França 🇫🇷",          teamB:"Suécia 🇸🇪",        scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-30", time:"A definir", venue:"A definir" },
       { id:"r32-7",  teamA:"México 🇲🇽",          teamB:"Escócia 🏴󠁧󠁢󠁳󠁣󠁴󠁿",       scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-30", time:"A definir", venue:"A definir" },
