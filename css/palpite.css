@@ -69,6 +69,35 @@
   line-height: 1.6;
 }
 
+/* ─── Nome travado ───────────────────────────────────────────────── */
+.name-locked {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,215,0,0.06);
+  border: 1.5px solid rgba(255,215,0,0.3);
+  border-radius: 12px;
+  padding: 14px 20px;
+}
+
+.name-locked-avatar { font-size: 1.8rem; line-height: 1; }
+
+.name-locked-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--white);
+}
+
+.name-locked-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--green);
+  background: rgba(0,192,112,0.12);
+  border: 1px solid rgba(0,192,112,0.25);
+  border-radius: 100px;
+  padding: 3px 10px;
+}
+
 /* ─── Participant Name Pills ─────────────────────────────────────── */
 .name-grid {
   display: flex;

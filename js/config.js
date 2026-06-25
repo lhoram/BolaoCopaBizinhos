@@ -106,13 +106,15 @@ const CONFIG = {
   },
 
   // Participantes
-  // ADMIN: adicione os participantes aqui e atualize os scores após cada rodada
+  // ADMIN: cada pessoa recebe seu link exclusivo para fazer palpites:
+  //   https://lhoram.github.io/BolaoCopaBizinhos/palpite.html?p=NOME&t=TOKEN
+  // Substitua NOME e TOKEN pelos valores abaixo. Compartilhe via WhatsApp individualmente.
   participants: [
-    { name: "Odir",    emoji: "🧔", scores: { r32:0, oitavas:0, quartas:0, semi:0, terceiro:0, final:0 } },
-    { name: "Renata",  emoji: "👩", scores: { r32:0, oitavas:0, quartas:0, semi:0, terceiro:0, final:0 } },
-    { name: "João",    emoji: "👨", scores: { r32:0, oitavas:0, quartas:0, semi:0, terceiro:0, final:0 } },
-    { name: "Isabela", emoji: "👱‍♀️", scores: { r32:0, oitavas:0, quartas:0, semi:0, terceiro:0, final:0 } },
-    { name: "Wiliams", emoji: "🕺", scores: { r32:0, oitavas:0, quartas:0, semi:0, terceiro:0, final:0 } },
-    { name: "Wagner",  emoji: "🎯", scores: { r32:0, oitavas:0, quartas:0, semi:0, terceiro:0, final:0 } },
+    { name: "Odir",    emoji: "🧔", token: "od7k2f", scores: { r32:0, oitavas:0, quartas:0, semi:0, terceiro:0, final:0 } },
+    { name: "Renata",  emoji: "👩", token: "rn4m9x", scores: { r32:0, oitavas:0, quartas:0, semi:0, terceiro:0, final:0 } },
+    { name: "João",    emoji: "👨", token: "jo5w3q", scores: { r32:0, oitavas:0, quartas:0, semi:0, terceiro:0, final:0 } },
+    { name: "Isabela", emoji: "👱‍♀️", token: "is8b1r", scores: { r32:0, oitavas:0, quartas:0, semi:0, terceiro:0, final:0 } },
+    { name: "Wiliams", emoji: "🕺", token: "wi2p6s", scores: { r32:0, oitavas:0, quartas:0, semi:0, terceiro:0, final:0 } },
+    { name: "Wagner",  emoji: "🎯", token: "wg9n4v", scores: { r32:0, oitavas:0, quartas:0, semi:0, terceiro:0, final:0 } },
   ],
 };

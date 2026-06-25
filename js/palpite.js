@@ -7,6 +7,34 @@ function fmtDate(dateStr) {
   return `${parseInt(d)} ${months[parseInt(m) - 1]}`;
 }
 
+/* ─── Token auth ────────────────────────────────────────────────── */
+
+function getUrlParams() {
+  const p = new URLSearchParams(window.location.search);
+  return { name: p.get('p'), token: p.get('t') };
+}
+
+function findParticipant(name, token) {
+  return CONFIG.participants.find(p => p.name === name && p.token === token) || null;
+}
+
+function renderInvalidLink() {
+  return `
+    <section class="bet-hero bet-hero--center">
+      <div class="container">
+        <a href="index.html" class="bet-back">← Voltar ao site</a>
+        <div style="font-size:3rem;margin:16px 0">🔒</div>
+        <h1 class="bet-title">Link inválido</h1>
+        <p style="color:var(--grey);max-width:360px;margin:0 auto 28px">
+          Use o link personalizado que o admin enviou para você no WhatsApp.
+          Cada participante tem um link único — não é possível usar o link de outra pessoa.
+        </p>
+        <a href="index.html" class="btn btn-outline">Voltar ao site</a>
+      </div>
+    </section>
+  `;
+}
+
 /* ─── Init ──────────────────────────────────────────────────────── */
 
 function initPalpite() {
@@ -20,24 +48,32 @@ function initPalpite() {
 
   document.title = `Palpite — ${scoring.label} · Bolão Bizinhos`;
 
-  if (!isOpen) { app.innerHTML = renderClosed(scoring); return; }
+  // Valida token da URL
+  const { name, token } = getUrlParams();
+  const participant = name && token ? findParticipant(name, token) : null;
 
-  app.innerHTML = renderForm(scoring, matches, deadline);
-  setupListeners(round, matches);
+  if (!participant) { app.innerHTML = renderInvalidLink(); return; }
+  if (!isOpen)      { app.innerHTML = renderClosed(scoring); return; }
+
+  app.innerHTML = renderForm(scoring, matches, deadline, participant);
+  setupListeners(round, matches, participant);
 }
 
 /* ─── Render: form ──────────────────────────────────────────────── */
 
-function renderForm(scoring, matches, deadline) {
+function renderForm(scoring, matches, deadline, participant) {
   const dlStr = deadline.toLocaleDateString('pt-BR', { day:'2-digit', month:'long' })
               + ' às ' + deadline.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
 
-  const namesHtml = CONFIG.participants.map(p => `
-    <label class="name-pill">
-      <input type="radio" name="participante" value="${p.name}" required>
-      <span>${p.emoji} ${p.name}</span>
-    </label>
-  `).join('');
+  // Nome travado — mostra apenas o participante autenticado
+  const namesHtml = `
+    <div class="name-locked">
+      <span class="name-locked-avatar">${participant.emoji}</span>
+      <span class="name-locked-name">${participant.name}</span>
+      <span class="name-locked-badge">🔒 Identificado</span>
+    </div>
+    <input type="hidden" name="participante" value="${participant.name}">
+  `;
 
   const matchesHtml = matches.map((m, i) => `
     <div class="bet-card" id="bet-card-${m.id}">
@@ -94,8 +130,8 @@ function renderForm(scoring, matches, deadline) {
         <form id="bet-form" novalidate>
 
           <div class="bet-block">
-            <h2 class="bet-block-title">👤 Quem está apostando?</h2>
-            <div class="name-grid">${namesHtml}</div>
+            <h2 class="bet-block-title">👤 Apostando como</h2>
+            ${namesHtml}
           </div>
 
           <div class="bet-info-box">
@@ -175,7 +211,7 @@ function renderSuccess(nome, round, jogos) {
 
 /* ─── Listeners ─────────────────────────────────────────────────── */
 
-function setupListeners(round, matches) {
+function setupListeners(round, matches, participant) {
   const form = document.getElementById('bet-form');
   if (!form) return;
 
@@ -202,21 +238,15 @@ function setupListeners(round, matches) {
   // Radio pills highlight
   form.addEventListener('change', e => {
     const el = e.target;
-    if (!el.matches('input[type="radio"]')) return;
-
-    if (el.name.endsWith('-adv')) {
-      const matchId = el.name.replace('-adv', '');
-      highlightPills(matchId, el.value);
-    } else if (el.name === 'participante') {
-      document.querySelectorAll('.name-pill').forEach(p => p.classList.remove('selected'));
-      el.closest('.name-pill').classList.add('selected');
-    }
+    if (!el.matches('input[type="radio"]') || !el.name.endsWith('-adv')) return;
+    const matchId = el.name.replace('-adv', '');
+    highlightPills(matchId, el.value);
   });
 
   // Submit
   form.addEventListener('submit', e => {
     e.preventDefault();
-    handleSubmit(form, round, matches);
+    handleSubmit(form, round, matches, participant);
   });
 }
 
@@ -229,13 +259,8 @@ function highlightPills(matchId, winner) {
 
 /* ─── Submit ────────────────────────────────────────────────────── */
 
-function handleSubmit(form, round, matches) {
-  // 1. Participant check
-  const participanteRadio = form.querySelector('input[name="participante"]:checked');
-  if (!participanteRadio) {
-    shakeBlock('Selecione seu nome antes de enviar!');
-    return;
-  }
+function handleSubmit(form, round, matches, participant) {
+  const nome = participant.name;
 
   // 2. Validate all matches
   let errors = [];
@@ -258,7 +283,6 @@ function handleSubmit(form, round, matches) {
   }
 
   // 3. Collect palpites
-  const nome = participanteRadio.value;
   const jogos = matches.map(m => {
     const advVal = form.querySelector(`input[name="${m.id}-adv"]:checked`).value;
     return {
