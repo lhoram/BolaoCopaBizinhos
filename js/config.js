@@ -20,7 +20,7 @@ const CONFIG = {
   // Links do Google Forms por rodada
   // ADMIN: preencha a URL quando criar cada formulário
   forms: {
-    r32:      { url: "", deadline: "2026-06-27T23:59:00" },
+    r32:      { url: "", deadline: "2026-06-28T12:00:00" },
     oitavas:  { url: "", deadline: "2026-07-03T23:59:00" },
     quartas:  { url: "", deadline: "2026-07-09T23:59:00" },
     semi:     { url: "", deadline: "2026-07-13T23:59:00" },
