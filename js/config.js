@@ -59,25 +59,23 @@ const CONFIG = {
   // ADMIN: após 27/Jun substitua "1º Grupo X" / "2º Grupo X" pelos times reais classificados
   matches: {
     r32: [
-      // Cruzamentos fixos: 1º vs 2º de grupos opostos
-      { id:"r32-1",  teamA:"1º Grupo A", teamB:"2º Grupo B", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-28", time:"12:00", venue:"MetLife Stadium, Nova York" },
-      { id:"r32-2",  teamA:"Brasil 🇧🇷",   teamB:"2º Grupo D", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-28", time:"15:00", venue:"AT&T Stadium, Dallas" },
-      { id:"r32-3",  teamA:"1º Grupo E", teamB:"2º Grupo F", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-28", time:"19:00", venue:"SoFi Stadium, Los Angeles" },
-      { id:"r32-4",  teamA:"1º Grupo G", teamB:"2º Grupo H", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-28", time:"22:00", venue:"Levi's Stadium, São Francisco" },
-      { id:"r32-5",  teamA:"1º Grupo I", teamB:"2º Grupo J", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-29", time:"12:00", venue:"Estadio Azteca, Cidade do México" },
-      { id:"r32-6",  teamA:"1º Grupo K", teamB:"2º Grupo L", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-29", time:"15:00", venue:"BMO Field, Toronto" },
-      // Cruzamentos: 1º vs Melhor 3º classificado
-      { id:"r32-7",  teamA:"1º Grupo B", teamB:"Melhor 3º",  scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-29", time:"19:00", venue:"Lincoln Financial, Filadélfia" },
-      { id:"r32-8",  teamA:"1º Grupo D", teamB:"Melhor 3º",  scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-29", time:"22:00", venue:"Arrowhead Stadium, Kansas City" },
-      { id:"r32-9",  teamA:"1º Grupo F", teamB:"Melhor 3º",  scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-30", time:"12:00", venue:"Allegiant Stadium, Las Vegas" },
-      { id:"r32-10", teamA:"1º Grupo H", teamB:"Melhor 3º",  scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-30", time:"15:00", venue:"Gillette Stadium, Boston" },
-      { id:"r32-11", teamA:"1º Grupo J", teamB:"Melhor 3º",  scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-30", time:"19:00", venue:"Hard Rock Stadium, Miami" },
-      { id:"r32-12", teamA:"1º Grupo L", teamB:"Melhor 3º",  scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-30", time:"22:00", venue:"Lumen Field, Seattle" },
-      // Cruzamentos: 2º vs Melhor 3º classificado
-      { id:"r32-13", teamA:"2º Grupo A", teamB:"Melhor 3º",  scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-01", time:"12:00", venue:"NRG Stadium, Houston" },
-      { id:"r32-14", teamA:"Marrocos 🇲🇦", teamB:"Melhor 3º",  scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-01", time:"15:00", venue:"Estadio Akron, Guadalajara" },
-      { id:"r32-15", teamA:"2º Grupo E", teamB:"Melhor 3º",  scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-01", time:"19:00", venue:"BC Place, Vancouver" },
-      { id:"r32-16", teamA:"2º Grupo G", teamB:"Melhor 3º",  scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-01", time:"22:00", venue:"Rose Bowl, Pasadena" },
+      // Chaveamento oficial Copa 2026 — 16 avos de final
+      { id:"r32-1",  teamA:"Coreia do Sul 🇰🇷", teamB:"Canadá 🇨🇦",       scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-28", time:"A definir", venue:"A definir" },
+      { id:"r32-2",  teamA:"Brasil 🇧🇷",          teamB:"Japão 🇯🇵",         scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-29", time:"A definir", venue:"NRG Stadium, Houston" },
+      { id:"r32-3",  teamA:"Alemanha 🇩🇪",        teamB:"Paraguai 🇵🇾",      scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-29", time:"A definir", venue:"A definir" },
+      { id:"r32-4",  teamA:"Holanda 🇳🇱",         teamB:"Marrocos 🇲🇦",      scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-29", time:"A definir", venue:"A definir" },
+      { id:"r32-5",  teamA:"Costa do Marfim 🇨🇮", teamB:"Noruega 🇳🇴",      scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-30", time:"A definir", venue:"A definir" },
+      { id:"r32-6",  teamA:"França 🇫🇷",          teamB:"Suécia 🇸🇪",        scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-30", time:"A definir", venue:"A definir" },
+      { id:"r32-7",  teamA:"México 🇲🇽",          teamB:"Escócia 🏴󠁧󠁢󠁳󠁣󠁴󠁿",       scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-30", time:"A definir", venue:"A definir" },
+      { id:"r32-8",  teamA:"Inglaterra 🏴󠁧󠁢󠁥󠁮󠁧󠁿",    teamB:"Argélia 🇩🇿",       scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-01", time:"A definir", venue:"A definir" },
+      { id:"r32-9",  teamA:"Egito 🇪🇬",           teamB:"Cabo Verde 🇨🇻",    scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-01", time:"A definir", venue:"A definir" },
+      { id:"r32-10", teamA:"EUA 🇺🇸",             teamB:"Bósnia 🇧🇦",        scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-01", time:"A definir", venue:"A definir" },
+      { id:"r32-11", teamA:"Espanha 🇪🇸",         teamB:"Áustria 🇦🇹",       scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-02", time:"A definir", venue:"A definir" },
+      { id:"r32-12", teamA:"Portugal 🇵🇹",        teamB:"Gana 🇬🇭",          scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-02", time:"A definir", venue:"A definir" },
+      { id:"r32-13", teamA:"Suíça 🇨🇭",           teamB:"Bélgica 🇧🇪",       scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-02", time:"A definir", venue:"A definir" },
+      { id:"r32-14", teamA:"Austrália 🇦🇺",       teamB:"Irã 🇮🇷",           scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-03", time:"A definir", venue:"A definir" },
+      { id:"r32-15", teamA:"Argentina 🇦🇷",       teamB:"Uruguai 🇺🇾",       scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-03", time:"A definir", venue:"A definir" },
+      { id:"r32-16", teamA:"Colômbia 🇨🇴",        teamB:"Croácia 🇭🇷",       scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-03", time:"A definir", venue:"A definir" },
     ],
     oitavas: [
       { id:"oit-1", teamA:"Venc. R32-1",  teamB:"Venc. R32-2",  scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-04", time:"15:00", venue:"A definir" },
