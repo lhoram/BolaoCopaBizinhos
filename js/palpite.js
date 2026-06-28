@@ -215,35 +215,36 @@ function setupListeners(round, matches, participant) {
   const form = document.getElementById('bet-form');
   if (!form) return;
 
-  // Score inputs → auto-select "quem avança" when score is not tied
-  matches.forEach(m => {
-    const inA = document.getElementById(`sc-${m.id}-a`);
-    const inB = document.getElementById(`sc-${m.id}-b`);
-
-    function autoAdvance() {
+  // Verificador contínuo: a cada 300ms sincroniza "quem avança" com os placares
+  // Mais confiável que eventos isolados em mobile e quando o usuário edita valores
+  setInterval(() => {
+    matches.forEach(m => {
+      const inA = document.getElementById(`sc-${m.id}-a`);
+      const inB = document.getElementById(`sc-${m.id}-b`);
+      if (!inA || !inB) return;
       const valA = inA.value.trim();
       const valB = inB.value.trim();
       if (valA === '' || valB === '') return;
       const a = parseInt(valA, 10);
       const b = parseInt(valB, 10);
       if (isNaN(a) || isNaN(b)) return;
+
       if (a !== b) {
         const winner = a > b ? 'A' : 'B';
-        const radio = form.querySelector(`input[name="${m.id}-adv"][value="${winner}"]`);
-        if (radio) { radio.checked = true; highlightPills(m.id, winner); }
+        const current = form.querySelector(`input[name="${m.id}-adv"]:checked`);
+        if (!current || current.value !== winner) {
+          const radio = form.querySelector(`input[name="${m.id}-adv"][value="${winner}"]`);
+          if (radio) { radio.checked = true; highlightPills(m.id, winner); }
+        }
       } else {
-        form.querySelectorAll(`input[name="${m.id}-adv"]`).forEach(r => r.checked = false);
-        highlightPills(m.id, null);
+        const current = form.querySelector(`input[name="${m.id}-adv"]:checked`);
+        if (current) {
+          current.checked = false;
+          highlightPills(m.id, null);
+        }
       }
-    }
-
-    // Delay de 80ms para garantir que teclado numérico mobile commitou o valor
-    function deferred() { setTimeout(autoAdvance, 80); }
-    ['input', 'change', 'blur'].forEach(ev => {
-      inA.addEventListener(ev, deferred);
-      inB.addEventListener(ev, deferred);
     });
-  });
+  }, 300);
 
   // Radio pills highlight
   form.addEventListener('change', e => {
