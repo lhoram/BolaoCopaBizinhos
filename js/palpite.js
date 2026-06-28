@@ -221,26 +221,28 @@ function setupListeners(round, matches, participant) {
     const inB = document.getElementById(`sc-${m.id}-b`);
 
     function autoAdvance() {
-      const a = parseInt(inA.value);
-      const b = parseInt(inB.value);
-      if (isNaN(a) || isNaN(b) || inA.value === '' || inB.value === '') return;
+      const valA = inA.value.trim();
+      const valB = inB.value.trim();
+      if (valA === '' || valB === '') return;
+      const a = parseInt(valA, 10);
+      const b = parseInt(valB, 10);
+      if (isNaN(a) || isNaN(b)) return;
       if (a !== b) {
-        // Placar com vencedor claro: seleciona automaticamente
         const winner = a > b ? 'A' : 'B';
         const radio = form.querySelector(`input[name="${m.id}-adv"][value="${winner}"]`);
         if (radio) { radio.checked = true; highlightPills(m.id, winner); }
       } else {
-        // Empate: limpa a seleção para forçar escolha manual
         form.querySelectorAll(`input[name="${m.id}-adv"]`).forEach(r => r.checked = false);
         highlightPills(m.id, null);
       }
     }
 
-    inA.addEventListener('input', autoAdvance);
-    inB.addEventListener('input', autoAdvance);
-    // Dispara também no blur para capturar preenchimento por teclado numérico mobile
-    inA.addEventListener('change', autoAdvance);
-    inB.addEventListener('change', autoAdvance);
+    // Delay de 80ms para garantir que teclado numérico mobile commitou o valor
+    function deferred() { setTimeout(autoAdvance, 80); }
+    ['input', 'change', 'blur'].forEach(ev => {
+      inA.addEventListener(ev, deferred);
+      inB.addEventListener(ev, deferred);
+    });
   });
 
   // Radio pills highlight
