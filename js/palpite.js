@@ -223,16 +223,24 @@ function setupListeners(round, matches, participant) {
     function autoAdvance() {
       const a = parseInt(inA.value);
       const b = parseInt(inB.value);
-      if (isNaN(a) || isNaN(b)) return;
+      if (isNaN(a) || isNaN(b) || inA.value === '' || inB.value === '') return;
       if (a !== b) {
+        // Placar com vencedor claro: seleciona automaticamente
         const winner = a > b ? 'A' : 'B';
         const radio = form.querySelector(`input[name="${m.id}-adv"][value="${winner}"]`);
         if (radio) { radio.checked = true; highlightPills(m.id, winner); }
+      } else {
+        // Empate: limpa a seleção para forçar escolha manual
+        form.querySelectorAll(`input[name="${m.id}-adv"]`).forEach(r => r.checked = false);
+        highlightPills(m.id, null);
       }
     }
 
     inA.addEventListener('input', autoAdvance);
     inB.addEventListener('input', autoAdvance);
+    // Dispara também no blur para capturar preenchimento por teclado numérico mobile
+    inA.addEventListener('change', autoAdvance);
+    inB.addEventListener('change', autoAdvance);
   });
 
   // Radio pills highlight
@@ -253,7 +261,7 @@ function setupListeners(round, matches, participant) {
 function highlightPills(matchId, winner) {
   ['A','B'].forEach(side => {
     const pill = document.getElementById(`rp-${matchId}-${side.toLowerCase()}`);
-    if (pill) pill.classList.toggle('selected', side === winner);
+    if (pill) pill.classList.toggle('selected', winner !== null && side === winner);
   });
 }
 
