@@ -85,15 +85,15 @@ function renderForm(scoring, matches, deadline, participant) {
 
       <div class="bet-score-row">
         <span class="bet-team-name">${m.teamA}</span>
-        <input class="bet-input" type="number"
+        <input class="bet-input" type="text" inputmode="numeric" pattern="[0-9]*"
                id="sc-${m.id}-a" name="${m.id}-a"
-               min="0" max="20" placeholder="0"
+               maxlength="2" placeholder="0"
                required autocomplete="off"
                data-match="${m.id}">
         <span class="bet-sep">×</span>
-        <input class="bet-input" type="number"
+        <input class="bet-input" type="text" inputmode="numeric" pattern="[0-9]*"
                id="sc-${m.id}-b" name="${m.id}-b"
-               min="0" max="20" placeholder="0"
+               maxlength="2" placeholder="0"
                required autocomplete="off"
                data-match="${m.id}">
         <span class="bet-team-name bet-team-name--right">${m.teamB}</span>
