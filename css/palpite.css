@@ -377,6 +377,31 @@
 }
 .summary-adv strong { color: var(--green); }
 
+/* ─── Share buttons ──────────────────────────────────────────────── */
+.share-wrap {
+  max-width: 640px;
+  margin: 20px auto 0;
+  text-align: center;
+}
+
+.share-label {
+  font-size: 0.85rem;
+  color: var(--grey);
+  margin-bottom: 12px;
+}
+
+.share-btns {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.share-btns .btn {
+  flex: 1;
+  max-width: 240px;
+}
+
 /* ─── Responsive ─────────────────────────────────────────────────── */
 @media (max-width: 560px) {
   .bet-grid { grid-template-columns: 1fr; }

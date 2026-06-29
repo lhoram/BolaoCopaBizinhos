@@ -53,7 +53,20 @@ function initPalpite() {
   const participant = name && token ? findParticipant(name, token) : null;
 
   if (!participant) { app.innerHTML = renderInvalidLink(); return; }
-  if (!isOpen)      { app.innerHTML = renderClosed(scoring); return; }
+
+  // Se já apostou, mostra resumo (mesmo com prazo encerrado)
+  const savedKey = `bolao_${round}_${participant.name}`;
+  const saved    = localStorage.getItem(savedKey);
+  if (saved) {
+    try {
+      const entry = JSON.parse(saved);
+      app.innerHTML = renderSuccess(participant.name, round, entry.jogos, !isOpen);
+      setupShareButtons(participant.name, round, entry.jogos);
+      return;
+    } catch(e) { localStorage.removeItem(savedKey); }
+  }
+
+  if (!isOpen) { app.innerHTML = renderClosed(scoring); return; }
 
   app.innerHTML = renderForm(scoring, matches, deadline, participant);
   setupListeners(round, matches, participant);
@@ -175,7 +188,7 @@ function renderClosed(scoring) {
 
 /* ─── Render: success ───────────────────────────────────────────── */
 
-function renderSuccess(nome, round, jogos) {
+function renderSuccess(nome, round, jogos, isPrazoEncerrado) {
   const scoring = CONFIG.scoring[round];
   const summaryRows = jogos.map((j, i) => `
     <div class="summary-row">
@@ -185,28 +198,91 @@ function renderSuccess(nome, round, jogos) {
     </div>
   `).join('');
 
+  const titulo = isPrazoEncerrado
+    ? '📋 Seus palpites'
+    : '🏆 Palpite enviado!';
+  const subtitulo = isPrazoEncerrado
+    ? `Palpites registrados de <strong>${nome}</strong> — ${scoring.label}`
+    : `Boa sorte, <strong>${nome}</strong>! Que seus palpites sejam certeiros 🎯`;
+
   return `
     <section class="bet-hero bet-hero--center">
       <div class="container">
         <a href="index.html" class="bet-back">← Voltar ao site</a>
-        <div class="success-trophy">🏆</div>
-        <h1 class="bet-title">Palpite enviado!</h1>
-        <p class="bet-deadline">Boa sorte, <strong>${nome}</strong>! Que seus palpites sejam certeiros 🎯</p>
+        <div class="success-trophy">${isPrazoEncerrado ? '📋' : '🏆'}</div>
+        <h1 class="bet-title">${titulo}</h1>
+        <p class="bet-deadline">${subtitulo}</p>
       </div>
     </section>
 
     <section class="bet-section">
       <div class="container">
         <div class="success-card">
-          <h2 class="success-card-title">✅ Seus palpites — ${scoring.label}</h2>
+          <h2 class="success-card-title">✅ ${scoring.label} — ${nome}</h2>
           <div class="summary-list">${summaryRows}</div>
         </div>
-        <div style="text-align:center;margin-top:24px">
-          <a href="index.html#ranking" class="btn btn-gold">Ver Ranking ↗</a>
+
+        <div class="share-wrap">
+          <p class="share-label">Compartilhe seus palpites no grupo:</p>
+          <div class="share-btns">
+            <button class="btn btn-gold" id="btn-whatsapp" onclick="sharePalpites('${nome}', '${round}')">
+              📱 Enviar no WhatsApp
+            </button>
+            <button class="btn btn-outline" id="btn-copy" onclick="copyPalpites('${nome}', '${round}')">
+              📋 Copiar texto
+            </button>
+          </div>
+          <p id="copy-confirm" style="color:var(--green);margin-top:8px;font-size:0.85rem;display:none">✅ Copiado!</p>
+        </div>
+
+        <div style="text-align:center;margin-top:16px">
+          <a href="index.html#ranking" class="btn btn-outline">Ver Ranking ↗</a>
         </div>
       </div>
     </section>
   `;
+}
+
+function formatPalpitesText(nome, round, jogos) {
+  const scoring = CONFIG.scoring[round];
+  const linhas = jogos.map((j, i) =>
+    `Jogo ${i+1}: ${j.teamA} ${j.scoreA}×${j.scoreB} ${j.teamB} → ${j.avanca} avança`
+  ).join('\n');
+  return `🏆 Bolão Copa Bizinhos 2026\n👤 ${nome} — ${scoring.label}\n\n${linhas}`;
+}
+
+function copyPalpites(nome, round) {
+  const saved = localStorage.getItem(`bolao_${round}_${nome}`);
+  if (!saved) return;
+  const { jogos } = JSON.parse(saved);
+  const text = formatPalpitesText(nome, round, jogos);
+  navigator.clipboard.writeText(text).then(() => {
+    const el = document.getElementById('copy-confirm');
+    if (el) { el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 3000); }
+  }).catch(() => {
+    // fallback para browsers que não suportam clipboard API
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    const el = document.getElementById('copy-confirm');
+    if (el) { el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 3000); }
+  });
+}
+
+function sharePalpites(nome, round) {
+  const saved = localStorage.getItem(`bolao_${round}_${nome}`);
+  if (!saved) return;
+  const { jogos } = JSON.parse(saved);
+  const text = formatPalpitesText(nome, round, jogos);
+  const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+  window.open(url, '_blank');
+}
+
+function setupShareButtons(nome, round, jogos) {
+  // botões já têm onclick inline no HTML, nada extra necessário
 }
 
 /* ─── Listeners ─────────────────────────────────────────────────── */
@@ -329,7 +405,7 @@ function handleSubmit(form, round, matches, participant) {
   localStorage.setItem(`bolao_${round}_${nome}`, JSON.stringify(entry));
 
   // 5. Show success
-  document.getElementById('palpite-app').innerHTML = renderSuccess(nome, round, jogos);
+  document.getElementById('palpite-app').innerHTML = renderSuccess(nome, round, jogos, false);
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
