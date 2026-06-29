@@ -400,13 +400,50 @@ function handleSubmit(form, round, matches, participant) {
     };
   });
 
-  // 4. Save to localStorage (demo — sem backend)
+  // 4. Salva localmente e no Supabase
   const entry = { nome, round, timestamp: new Date().toISOString(), jogos };
   localStorage.setItem(`bolao_${round}_${nome}`, JSON.stringify(entry));
+  savePalpiteCloud(nome, round, jogos, participant.token);
 
   // 5. Show success
   document.getElementById('palpite-app').innerHTML = renderSuccess(nome, round, jogos, false);
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ─── Supabase ───────────────────────────────────────────────────── */
+
+async function savePalpiteCloud(nome, round, jogos, token) {
+  const { url, anonKey } = CONFIG.supabase;
+  if (!url || !anonKey) return; // não configurado ainda
+  try {
+    // Upsert: se já existe para esse nome+round, atualiza
+    await fetch(`${url}/rest/v1/palpites?nome=eq.${encodeURIComponent(nome)}&round=eq.${round}`, {
+      method: 'DELETE',
+      headers: { 'apikey': anonKey, 'Authorization': `Bearer ${anonKey}` }
+    });
+    await fetch(`${url}/rest/v1/palpites`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': anonKey,
+        'Authorization': `Bearer ${anonKey}`,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ nome, round, jogos, token })
+    });
+  } catch(e) { /* falha silenciosa — localStorage já salvou */ }
+}
+
+async function getPalpitesCloud(round) {
+  const { url, anonKey } = CONFIG.supabase;
+  if (!url || !anonKey) return null;
+  try {
+    const res = await fetch(
+      `${url}/rest/v1/palpites?round=eq.${round}&select=nome,jogos&order=nome`,
+      { headers: { 'apikey': anonKey, 'Authorization': `Bearer ${anonKey}` } }
+    );
+    return res.ok ? await res.json() : null;
+  } catch(e) { return null; }
 }
 
 function shakeBlock(msg) {

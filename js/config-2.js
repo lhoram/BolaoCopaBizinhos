@@ -28,6 +28,12 @@ const CONFIG = {
     final:    { url: "", deadline: "2026-07-18T23:59:00" },
   },
 
+  // Backend Supabase — preencha após criar o projeto em supabase.com (gratuito)
+  supabase: {
+    url:     "", // ex: https://xyzxyz.supabase.co
+    anonKey: "", // chave anon (Settings > API)
+  },
+
   roundOrder: ["r32", "oitavas", "quartas", "semi", "terceiro", "final"],
 
   // Grupos Copa 2026 (referência para o admin)

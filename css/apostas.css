@@ -1,0 +1,154 @@
+/* ─── Hero ───────────────────────────────────────────────────────── */
+.ap-hero {
+  padding: 100px 20px 40px;
+  background: linear-gradient(180deg, var(--navy-3) 0%, var(--navy) 100%);
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+}
+
+.ap-trophy { font-size: 3rem; margin-bottom: 12px; }
+
+.ap-title {
+  font-family: 'Bebas Neue', cursive;
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  letter-spacing: 0.03em;
+  margin-bottom: 8px;
+}
+
+.ap-sub {
+  font-size: 0.9rem;
+  color: var(--grey);
+}
+
+/* ─── Section ────────────────────────────────────────────────────── */
+.ap-section { padding: 48px 0 80px; }
+
+.ap-loading {
+  text-align: center;
+  color: var(--grey);
+  font-size: 1rem;
+  padding: 48px 0;
+}
+
+/* ─── Aviso ──────────────────────────────────────────────────────── */
+.ap-aviso {
+  text-align: center;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 48px 20px;
+}
+
+.ap-aviso h2 {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.6rem;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+
+.ap-aviso p {
+  color: var(--grey);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* ─── Grid de apostas ────────────────────────────────────────────── */
+.ap-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+/* ─── Card de apostas ────────────────────────────────────────────── */
+.ap-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color var(--transition);
+}
+
+.ap-card:hover { border-color: var(--border-h); }
+
+.ap-card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  background: rgba(255,215,0,0.05);
+  border-bottom: 1px solid var(--border);
+}
+
+.ap-emoji { font-size: 1.5rem; }
+
+.ap-nome {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+/* ─── Linhas de aposta ───────────────────────────────────────────── */
+.ap-rows { padding: 6px 0; }
+
+.ap-row {
+  display: grid;
+  grid-template-columns: 28px 1fr auto auto;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-size: 0.8rem;
+  transition: background var(--transition);
+}
+
+.ap-row:last-child { border-bottom: none; }
+
+.ap-row--exact  { background: rgba(255,215,0,0.07); }
+.ap-row--win    { background: rgba(0,192,112,0.05); }
+.ap-row--miss   { background: rgba(248,113,113,0.05); }
+
+.ap-jogo {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--grey);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.ap-match {
+  color: var(--white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ap-match strong {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1rem;
+  color: var(--gold);
+}
+
+.ap-avanca {
+  font-size: 0.72rem;
+  color: var(--green);
+  white-space: nowrap;
+}
+
+.ap-status { font-size: 0.85rem; }
+
+/* ─── Legenda ────────────────────────────────────────────────────── */
+.ap-legenda {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+  font-size: 0.8rem;
+  color: var(--grey);
+}
+
+.ap-legenda span { display: flex; align-items: center; gap: 5px; }
+
+/* ─── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 560px) {
+  .ap-grid { grid-template-columns: 1fr; }
+  .ap-row  { grid-template-columns: 24px 1fr auto; font-size: 0.72rem; }
+  .ap-avanca { display: none; }
+}
