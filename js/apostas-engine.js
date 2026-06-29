@@ -24,33 +24,35 @@ async function initApostas() {
     return;
   }
 
-  // Fase encerrada: busca do Supabase
-  if (!CONFIG.supabase.url || !CONFIG.supabase.anonKey) {
-    content.innerHTML = renderAviso(
-      '⚙️ Backend não configurado',
-      'O administrador ainda não configurou o Supabase. Configure <code>supabase.url</code> e <code>supabase.anonKey</code> no <code>config.js</code>.'
-    );
+  // Fase encerrada: busca os arquivos do GitHub
+  if (!CONFIG.github.repo) {
+    content.innerHTML = renderAviso('⚙️ Repositório não configurado', 'Configure <code>github.repo</code> no <code>config.js</code>.');
     return;
   }
 
   content.innerHTML = '<div class="ap-loading">⏳ Buscando apostas de todos...</div>';
 
   try {
-    const res = await fetch(
-      `${CONFIG.supabase.url}/rest/v1/palpites?round=eq.${round}&select=nome,jogos&order=nome`,
-      { headers: { 'apikey': CONFIG.supabase.anonKey, 'Authorization': `Bearer ${CONFIG.supabase.anonKey}` } }
-    );
-    if (!res.ok) throw new Error('Erro na resposta');
-    const rows = await res.json();
+    // Lê o palpite de cada participante em paralelo
+    const rows = (await Promise.all(
+      CONFIG.participants.map(async p => {
+        const nome = p.name;
+        const path = `data/palpite-${round}-${nome.toLowerCase().replace(/\s/g,'-')}.json`;
+        const url  = `https://raw.githubusercontent.com/${CONFIG.github.repo}/main/${path}?t=${Date.now()}`;
+        const res  = await fetch(url);
+        if (!res.ok) return null; // participante ainda não apostou
+        return await res.json();
+      })
+    )).filter(Boolean);
 
     if (!rows.length) {
-      content.innerHTML = renderAviso('😕 Nenhuma aposta encontrada', 'Nenhum participante enviou palpites ainda.');
+      content.innerHTML = renderAviso('😕 Nenhuma aposta ainda', 'Nenhum participante enviou palpites nesta rodada.');
       return;
     }
 
     renderApostas(content, rows, matchById, scoring);
   } catch(e) {
-    content.innerHTML = renderAviso('❌ Erro ao carregar', 'Não foi possível buscar as apostas. Tente novamente em instantes.');
+    content.innerHTML = renderAviso('❌ Erro ao carregar', 'Não foi possível buscar as apostas. Tente novamente.');
   }
 }
 

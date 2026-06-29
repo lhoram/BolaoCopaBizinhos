@@ -28,10 +28,11 @@ const CONFIG = {
     final:    { url: "", deadline: "2026-07-18T23:59:00" },
   },
 
-  // Backend Supabase — preencha após criar o projeto em supabase.com (gratuito)
-  supabase: {
-    url:     "", // ex: https://xyzxyz.supabase.co
-    anonKey: "", // chave anon (Settings > API)
+  // Token do GitHub para salvar palpites (só precisa de permissão "Contents" neste repo)
+  // Crie em: github.com/settings/personal-access-tokens/new (Fine-grained, repo: lhoram/BolaoCopaBizinhos, Contents: read+write)
+  github: {
+    token: "", // preencha com o token criado
+    repo:  "lhoram/BolaoCopaBizinhos",
   },
 
   roundOrder: ["r32", "oitavas", "quartas", "semi", "terceiro", "final"],

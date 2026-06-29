@@ -400,50 +400,49 @@ function handleSubmit(form, round, matches, participant) {
     };
   });
 
-  // 4. Salva localmente e no Supabase
+  // 4. Salva localmente e no GitHub
   const entry = { nome, round, timestamp: new Date().toISOString(), jogos };
   localStorage.setItem(`bolao_${round}_${nome}`, JSON.stringify(entry));
-  savePalpiteCloud(nome, round, jogos, participant.token);
+  savePalpiteGitHub(nome, round, jogos);
 
   // 5. Show success
   document.getElementById('palpite-app').innerHTML = renderSuccess(nome, round, jogos, false);
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-/* ─── Supabase ───────────────────────────────────────────────────── */
+/* ─── GitHub como backend ────────────────────────────────────────── */
 
-async function savePalpiteCloud(nome, round, jogos, token) {
-  const { url, anonKey } = CONFIG.supabase;
-  if (!url || !anonKey) return; // não configurado ainda
+async function savePalpiteGitHub(nome, round, jogos) {
+  const { token, repo } = CONFIG.github;
+  if (!token) return; // não configurado ainda
+
+  const path    = `data/palpite-${round}-${nome.toLowerCase().replace(/\s/g,'-')}.json`;
+  const apiUrl  = `https://api.github.com/repos/${repo}/contents/${path}`;
+  const content = JSON.stringify({ nome, round, timestamp: new Date().toISOString(), jogos }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(content)));
+  const headers = {
+    'Authorization': `Bearer ${token}`,
+    'Accept':        'application/vnd.github+json',
+    'Content-Type':  'application/json',
+  };
+
   try {
-    // Upsert: se já existe para esse nome+round, atualiza
-    await fetch(`${url}/rest/v1/palpites?nome=eq.${encodeURIComponent(nome)}&round=eq.${round}`, {
-      method: 'DELETE',
-      headers: { 'apikey': anonKey, 'Authorization': `Bearer ${anonKey}` }
-    });
-    await fetch(`${url}/rest/v1/palpites`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': anonKey,
-        'Authorization': `Bearer ${anonKey}`,
-        'Prefer': 'return=minimal'
-      },
-      body: JSON.stringify({ nome, round, jogos, token })
+    // Verifica se arquivo já existe (para obter o sha necessário para atualizar)
+    let sha;
+    const check = await fetch(apiUrl, { headers });
+    if (check.ok) { const f = await check.json(); sha = f.sha; }
+
+    await fetch(apiUrl, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify({
+        message:   `Palpite de ${nome} — ${round}`,
+        content:   encoded,
+        committer: { name: 'Bolão Bizinhos Bot', email: 'bolao@bizinhos.com' },
+        ...(sha ? { sha } : {}),
+      }),
     });
   } catch(e) { /* falha silenciosa — localStorage já salvou */ }
-}
-
-async function getPalpitesCloud(round) {
-  const { url, anonKey } = CONFIG.supabase;
-  if (!url || !anonKey) return null;
-  try {
-    const res = await fetch(
-      `${url}/rest/v1/palpites?round=eq.${round}&select=nome,jogos&order=nome`,
-      { headers: { 'apikey': anonKey, 'Authorization': `Bearer ${anonKey}` } }
-    );
-    return res.ok ? await res.json() : null;
-  } catch(e) { return null; }
 }
 
 function shakeBlock(msg) {
