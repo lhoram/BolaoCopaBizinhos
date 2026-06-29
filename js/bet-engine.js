@@ -215,8 +215,11 @@ function setupListeners(round, matches, participant) {
   const form = document.getElementById('bet-form');
   if (!form) return;
 
+  // Rastreia quais seleções foram feitas automaticamente pelo poller
+  // (distingue de seleções manuais do usuário)
+  const autoSelected = new Set();
+
   // Verificador contínuo: a cada 300ms sincroniza "quem avança" com os placares
-  // Mais confiável que eventos isolados em mobile e quando o usuário edita valores
   setInterval(() => {
     matches.forEach(m => {
       const inA = document.getElementById(`sc-${m.id}-a`);
@@ -224,33 +227,43 @@ function setupListeners(round, matches, participant) {
       if (!inA || !inB) return;
       const valA = inA.value.trim();
       const valB = inB.value.trim();
-      if (valA === '' || valB === '') return;
-      const a = parseInt(valA, 10);
-      const b = parseInt(valB, 10);
-      if (isNaN(a) || isNaN(b)) return;
+      if (valA === '' && valB === '') return;
+      const a = valA === '' ? 0 : parseInt(valA, 10);
+      const b = valB === '' ? 0 : parseInt(valB, 10);
+      if (isNaN(a) || isNaN(b) || a < 0 || b < 0) return;
 
       if (a !== b) {
         const winner = a > b ? 'A' : 'B';
         const current = form.querySelector(`input[name="${m.id}-adv"]:checked`);
         if (!current || current.value !== winner) {
           const radio = form.querySelector(`input[name="${m.id}-adv"][value="${winner}"]`);
-          if (radio) { radio.checked = true; highlightPills(m.id, winner); }
+          if (radio) {
+            radio.checked = true;
+            highlightPills(m.id, winner);
+            autoSelected.add(m.id); // marca como auto-selecionado
+          }
         }
       } else {
-        const current = form.querySelector(`input[name="${m.id}-adv"]:checked`);
-        if (current) {
-          current.checked = false;
-          highlightPills(m.id, null);
+        // Empate: só limpa se foi o poller que tinha selecionado (não o usuário)
+        if (autoSelected.has(m.id)) {
+          const current = form.querySelector(`input[name="${m.id}-adv"]:checked`);
+          if (current) {
+            current.checked = false;
+            highlightPills(m.id, null);
+          }
+          autoSelected.delete(m.id);
         }
+        // Se o usuário selecionou manualmente, não toca
       }
     });
   }, 300);
 
-  // Radio pills highlight
+  // Radio pills — clique manual: remove do autoSelected para não ser limpo pelo poller
   form.addEventListener('change', e => {
     const el = e.target;
     if (!el.matches('input[type="radio"]') || !el.name.endsWith('-adv')) return;
     const matchId = el.name.replace('-adv', '');
+    autoSelected.delete(matchId); // marca como escolha manual
     highlightPills(matchId, el.value);
   });
 
@@ -273,35 +286,40 @@ function highlightPills(matchId, winner) {
 function handleSubmit(form, round, matches, participant) {
   const nome = participant.name;
 
-  // 2. Validate all matches
+  // 2. Validate all matches (campo vazio = 0, só "quem avança" é obrigatório)
   let errors = [];
   matches.forEach((m, i) => {
-    const a   = form.querySelector(`#sc-${m.id}-a`);
-    const b   = form.querySelector(`#sc-${m.id}-b`);
-    const adv = form.querySelector(`input[name="${m.id}-adv"]:checked`);
+    const inA  = form.querySelector(`#sc-${m.id}-a`);
+    const inB  = form.querySelector(`#sc-${m.id}-b`);
+    const adv  = form.querySelector(`input[name="${m.id}-adv"]:checked`);
     const card = document.getElementById(`bet-card-${m.id}`);
 
-    const hasError = a.value === '' || b.value === '' || !adv;
+    const sA = inA.value.trim() === '' ? 0 : parseInt(inA.value, 10);
+    const sB = inB.value.trim() === '' ? 0 : parseInt(inB.value, 10);
+    // Só dá erro se "quem avança" não estiver marcado
+    const hasError = isNaN(sA) || isNaN(sB) || !adv;
     card.classList.toggle('bet-card--error', hasError);
     if (hasError) errors.push(i + 1);
   });
 
   if (errors.length) {
-    alert(`Atenção: preencha placar e "quem avança" nos jogos ${errors.join(', ')}.`);
+    alert(`Atenção: selecione "quem avança" nos jogos ${errors.join(', ')}.`);
     document.getElementById(`bet-card-${matches[errors[0]-1].id}`)
             .scrollIntoView({ behavior: 'smooth', block: 'center' });
     return;
   }
 
-  // 3. Collect palpites
+  // 3. Collect palpites (campo vazio = 0)
   const jogos = matches.map(m => {
     const advVal = form.querySelector(`input[name="${m.id}-adv"]:checked`).value;
+    const rawA = form.querySelector(`#sc-${m.id}-a`).value.trim();
+    const rawB = form.querySelector(`#sc-${m.id}-b`).value.trim();
     return {
       id:     m.id,
       teamA:  m.teamA,
       teamB:  m.teamB,
-      scoreA: parseInt(form.querySelector(`#sc-${m.id}-a`).value),
-      scoreB: parseInt(form.querySelector(`#sc-${m.id}-b`).value),
+      scoreA: rawA === '' ? 0 : parseInt(rawA),
+      scoreB: rawB === '' ? 0 : parseInt(rawB),
       avanca: advVal === 'A' ? m.teamA : m.teamB,
     };
   });
