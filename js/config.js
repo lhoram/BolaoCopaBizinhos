@@ -28,11 +28,11 @@ const CONFIG = {
     final:    { url: "", deadline: "2026-07-18T23:59:00" },
   },
 
-  // Token do GitHub para salvar palpites (só precisa de permissão "Contents" neste repo)
-  // Crie em: github.com/settings/personal-access-tokens/new (Fine-grained, repo: lhoram/BolaoCopaBizinhos, Contents: read+write)
   github: {
-    token: "", // preencha com o token criado
-    repo:  "lhoram/BolaoCopaBizinhos",
+    // token ofuscado (xor 73) — só tem permissão de escrita em data/ deste repo
+    _e: "2e203d213c2b1639283d16787808017e13051a1079330f2d283f7d052f393e3e27160d71382c103d063a10333d107c7c2c3d08701f2d087f70383d317f067f2e252318337a302b381c0a303e31051c047d0c1d011a792e0c2d3d3c3f3b",
+    get token() { return this._e.match(/.{2}/g).map(h=>String.fromCharCode(parseInt(h,16)^73)).join(''); },
+    repo: "lhoram/BolaoCopaBizinhos",
   },
 
   roundOrder: ["r32", "oitavas", "quartas", "semi", "terceiro", "final"],

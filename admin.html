@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Bolão Copa Bizinhos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { padding-top: 80px; }
+    .admin-wrap { max-width: 640px; margin: 0 auto; padding: 40px 20px 80px; }
+    .admin-title { font-family:'Bebas Neue',cursive; font-size:2.5rem; color:var(--gold); margin-bottom:8px; }
+    .admin-sub { color:var(--grey); font-size:.9rem; margin-bottom:32px; }
+    .admin-card { background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius); padding:24px; margin-bottom:20px; }
+    .admin-card h3 { font-size:1rem; font-weight:700; margin-bottom:14px; }
+    .token-input { width:100%; background:rgba(255,255,255,.06); border:1.5px solid var(--border); border-radius:10px; color:#fff; font-size:.85rem; padding:12px 14px; font-family:monospace; }
+    .token-input:focus { outline:none; border-color:var(--gold); }
+    .msg { font-size:.82rem; margin-top:8px; }
+    .msg-ok  { color:var(--green); }
+    .msg-err { color:#f87171; }
+    .status-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:10px; margin-top:12px; }
+    .status-card { background:rgba(255,255,255,.04); border:1px solid var(--border); border-radius:10px; padding:12px; text-align:center; }
+    .status-card .emoji { font-size:1.6rem; }
+    .status-card .sname { font-weight:700; font-size:.9rem; margin:4px 0; }
+    .status-card .sstatus { font-size:.75rem; }
+    .sstatus-ok  { color:var(--green); }
+    .sstatus-no  { color:var(--grey); }
+    .btn-pub { width:100%; margin-top:16px; padding:14px; font-size:1rem; border-radius:10px; }
+    .log { background:rgba(0,0,0,.3); border-radius:8px; padding:12px; font-family:monospace; font-size:.75rem; color:var(--grey); max-height:200px; overflow-y:auto; margin-top:12px; display:none; }
+    .log-line { padding:2px 0; border-bottom:1px solid rgba(255,255,255,.05); }
+    .log-ok  { color:var(--green); }
+    .log-err { color:#f87171; }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar--scrolled">
+    <div class="nav-container">
+      <a href="index.html" class="nav-brand">
+        <img src="assets/trophy.svg" alt="" class="nav-icon" aria-hidden="true">
+        <span class="nav-brand-text">Bolão Bizinhos</span>
+      </a>
+    </div>
+  </nav>
+
+  <div class="admin-wrap">
+    <h1 class="admin-title">🔧 Painel do Admin</h1>
+    <p class="admin-sub">Somente Odir. O token fica salvo no seu browser — nunca vai para o código.</p>
+
+    <!-- Token -->
+    <div class="admin-card">
+      <h3>🔑 GitHub Token</h3>
+      <input class="token-input" type="password" id="token-input"
+             placeholder="github_pat_..." autocomplete="off">
+      <p class="msg" id="token-msg"></p>
+      <button class="btn btn-gold" style="margin-top:12px;width:100%" onclick="saveToken()">Salvar token</button>
+    </div>
+
+    <!-- Status apostas -->
+    <div class="admin-card">
+      <h3>📋 Apostas publicadas — <span id="round-label">...</span></h3>
+      <div class="status-grid" id="status-grid">
+        <p style="color:var(--grey);font-size:.85rem">Configure o token primeiro.</p>
+      </div>
+      <button class="btn btn-gold btn-pub" id="btn-pub" onclick="publicarTodas()" style="display:none">
+        🚀 Publicar apostas de todos no site
+      </button>
+      <div class="log" id="pub-log"></div>
+    </div>
+  </div>
+
+  <script src="js/config-2.js"></script>
+  <script>
+    const STORAGE_KEY = 'bolao_admin_token';
+
+    function getToken() { return localStorage.getItem(STORAGE_KEY) || ''; }
+
+    function saveToken() {
+      const val = document.getElementById('token-input').value.trim();
+      if (!val.startsWith('github_pat_') && !val.startsWith('ghp_')) {
+        showMsg('token-msg', '❌ Token inválido. Deve começar com github_pat_ ou ghp_', false);
+        return;
+      }
+      localStorage.setItem(STORAGE_KEY, val);
+      showMsg('token-msg', '✅ Token salvo no browser (não vai para o código)', true);
+      checkStatus();
+    }
+
+    function showMsg(id, text, ok) {
+      const el = document.getElementById(id);
+      el.textContent = text;
+      el.className = 'msg ' + (ok ? 'msg-ok' : 'msg-err');
+    }
+
+    function log(text, ok) {
+      const box = document.getElementById('pub-log');
+      box.style.display = 'block';
+      const line = document.createElement('div');
+      line.className = 'log-line ' + (ok ? 'log-ok' : 'log-err');
+      line.textContent = new Date().toLocaleTimeString('pt-BR') + ' → ' + text;
+      box.appendChild(line);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    async function checkStatus() {
+      const token = getToken();
+      const round = CONFIG.currentRound;
+      const scoring = CONFIG.scoring[round];
+      document.getElementById('round-label').textContent = scoring.label;
+
+      const grid = document.getElementById('status-grid');
+      grid.innerHTML = '';
+
+      for (const p of CONFIG.participants) {
+        const nome = p.name;
+        const path = `data/palpite-${round}-${nome.toLowerCase().replace(/\s/g,'-')}.json`;
+        const apiUrl = `https://api.github.com/repos/${CONFIG.github.repo}/contents/${path}`;
+
+        let status = '⏳', cls = 'sstatus-no', exists = false;
+        try {
+          const res = await fetch(apiUrl, {
+            headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json' }
+          });
+          exists = res.ok;
+          status = exists ? '✅ Publicado' : '⏳ Aguardando';
+          cls    = exists ? 'sstatus-ok' : 'sstatus-no';
+        } catch(e) { status = '❌ Erro'; cls = 'sstatus-err'; }
+
+        grid.innerHTML += `
+          <div class="status-card">
+            <div class="emoji">${p.emoji}</div>
+            <div class="sname">${nome}</div>
+            <div class="sstatus ${cls}">${status}</div>
+          </div>`;
+      }
+
+      document.getElementById('btn-pub').style.display = 'block';
+    }
+
+    async function publicarTodas() {
+      const token = getToken();
+      if (!token) { alert('Configure o token primeiro!'); return; }
+      const round = CONFIG.currentRound;
+
+      log('Iniciando publicação...', true);
+      document.getElementById('btn-pub').disabled = true;
+
+      for (const p of CONFIG.participants) {
+        const nome = p.name;
+        const lsKey = `bolao_${round}_${nome}`;
+        const saved = localStorage.getItem(lsKey);
+
+        // Tenta ler do localStorage primeiro (se admin apostou neste browser)
+        // Para outros participantes, verifica se já está no GitHub
+        const path = `data/palpite-${round}-${nome.toLowerCase().replace(/\s/g,'-')}.json`;
+        const apiUrl = `https://api.github.com/repos/${CONFIG.github.repo}/contents/${path}`;
+
+        try {
+          const check = await fetch(apiUrl, {
+            headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json' }
+          });
+
+          if (check.ok) {
+            log(`${nome}: já publicado ✅`, true);
+          } else if (saved) {
+            // Tem no localStorage deste browser — publica
+            const entry = JSON.parse(saved);
+            const content = btoa(unescape(encodeURIComponent(JSON.stringify(entry, null, 2))));
+            await fetch(apiUrl, {
+              method: 'PUT',
+              headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' },
+              body: JSON.stringify({ message: `Palpite de ${nome} — ${round}`, content, committer: { name: 'Bolão Bot', email: 'bolao@bizinhos.com' } })
+            });
+            log(`${nome}: publicado do localStorage ✅`, true);
+          } else {
+            log(`${nome}: sem aposta ainda ⏳`, false);
+          }
+        } catch(e) {
+          log(`${nome}: erro — ${e.message}`, false);
+        }
+      }
+
+      log('Concluído! Recarregue para ver o status.', true);
+      document.getElementById('btn-pub').disabled = false;
+      setTimeout(checkStatus, 2000);
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      const saved = getToken();
+      if (saved) {
+        document.getElementById('token-input').value = saved;
+        showMsg('token-msg', '✅ Token salvo', true);
+        checkStatus();
+      }
+    });
+  </script>
+</body>
+</html>
