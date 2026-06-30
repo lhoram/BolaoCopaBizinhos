@@ -5,7 +5,7 @@ const CONFIG = {
 
   // Rodada atual aberta para palpites
   // Opções: "r32" | "oitavas" | "quartas" | "semi" | "terceiro" | "final" | "encerrado"
-  currentRound: "r32",
+  currentRound: "oitavas",
 
   // Pontuação por rodada
   scoring: {
@@ -21,7 +21,7 @@ const CONFIG = {
   // ADMIN: preencha a URL quando criar cada formulário
   forms: {
     r32:      { url: "", deadline: "2026-06-29T18:00:00" },
-    oitavas:  { url: "", deadline: "2026-07-03T23:59:00" },
+    oitavas:  { url: "", deadline: "2026-07-04T12:00:00" },
     quartas:  { url: "", deadline: "2026-07-09T23:59:00" },
     semi:     { url: "", deadline: "2026-07-13T23:59:00" },
     terceiro: { url: "", deadline: "2026-07-17T23:59:00" },
@@ -69,30 +69,30 @@ const CONFIG = {
       // Chaveamento oficial Copa 2026 — 16 avos de final (horários de Brasília)
       { id:"r32-1",  teamA:"África do Sul 🇿🇦", teamB:"Canadá 🇨🇦",        scoreA:0, scoreB:1, winner:"B", resolution:"regular", date:"2026-06-28", time:"16:00", venue:"SoFi Stadium, Los Angeles" },
       { id:"r32-2",  teamA:"Brasil 🇧🇷",        teamB:"Japão 🇯🇵",          scoreA:2, scoreB:1, winner:"A", resolution:"regular", date:"2026-06-29", time:"14:00", venue:"NRG Stadium, Houston" },
-      { id:"r32-3",  teamA:"Alemanha 🇩🇪",      teamB:"Paraguai 🇵🇾",       scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-29", time:"17:30", venue:"Gillette Stadium, Boston" },
-      { id:"r32-4",  teamA:"Holanda 🇳🇱",       teamB:"Marrocos 🇲🇦",       scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-29", time:"22:00", venue:"Estadio BBVA, Monterrey" },
-      { id:"r32-5",  teamA:"Costa do Marfim 🇨🇮",teamB:"Noruega 🇳🇴",      scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-30", time:"14:00", venue:"AT&T Stadium, Dallas" },
-      { id:"r32-6",  teamA:"França 🇫🇷",        teamB:"Suécia 🇸🇪",         scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-30", time:"18:00", venue:"MetLife Stadium, Nova Jersey" },
-      { id:"r32-7",  teamA:"México 🇲🇽",        teamB:"Equador 🇪🇨",        scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-06-30", time:"22:00", venue:"Estadio Azteca, Cidade do México" },
-      { id:"r32-8",  teamA:"Inglaterra 🏴󠁧󠁢󠁥󠁮󠁧󠁿",   teamB:"RD Congo 🇨🇩",       scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-01", time:"13:00", venue:"Mercedes-Benz Stadium, Atlanta" },
-      { id:"r32-9",  teamA:"Bélgica 🇧🇪",       teamB:"Senegal 🇸🇳",        scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-01", time:"17:00", venue:"Lumen Field, Seattle" },
-      { id:"r32-10", teamA:"EUA 🇺🇸",           teamB:"Bósnia 🇧🇦",         scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-01", time:"21:00", venue:"Levi's Stadium, Santa Clara" },
-      { id:"r32-11", teamA:"Espanha 🇪🇸",       teamB:"Áustria 🇦🇹",        scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-02", time:"16:00", venue:"Rose Bowl, Los Angeles" },
-      { id:"r32-12", teamA:"Portugal 🇵🇹",      teamB:"Croácia 🇭🇷",        scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-02", time:"20:00", venue:"BMO Field, Toronto" },
-      { id:"r32-13", teamA:"Suíça 🇨🇭",         teamB:"Argélia 🇩🇿",        scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-03", time:"00:00", venue:"BC Place, Vancouver" },
-      { id:"r32-14", teamA:"Austrália 🇦🇺",     teamB:"Egito 🇪🇬",          scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-03", time:"15:00", venue:"AT&T Stadium, Dallas" },
-      { id:"r32-15", teamA:"Argentina 🇦🇷",     teamB:"Cabo Verde 🇨🇻",     scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-03", time:"19:00", venue:"Hard Rock Stadium, Miami" },
-      { id:"r32-16", teamA:"Colômbia 🇨🇴",      teamB:"Gana 🇬🇭",           scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-03", time:"22:30", venue:"Arrowhead Stadium, Kansas City" },
+      { id:"r32-3",  teamA:"Alemanha 🇩🇪",      teamB:"Paraguai 🇵🇾",       scoreA:1, scoreB:1, winner:"B", resolution:"penalties", date:"2026-06-29", time:"17:30", venue:"Gillette Stadium, Boston" },
+      { id:"r32-4",  teamA:"Holanda 🇳🇱",       teamB:"Marrocos 🇲🇦",       scoreA:2, scoreB:1, winner:"A", resolution:"regular", date:"2026-06-29", time:"22:00", venue:"Estadio BBVA, Monterrey" },
+      { id:"r32-5",  teamA:"Costa do Marfim 🇨🇮",teamB:"Noruega 🇳🇴",      scoreA:0, scoreB:1, winner:"B", resolution:"regular", date:"2026-06-30", time:"14:00", venue:"AT&T Stadium, Dallas" },
+      { id:"r32-6",  teamA:"França 🇫🇷",        teamB:"Suécia 🇸🇪",         scoreA:2, scoreB:0, winner:"A", resolution:"regular", date:"2026-06-30", time:"18:00", venue:"MetLife Stadium, Nova Jersey" },
+      { id:"r32-7",  teamA:"México 🇲🇽",        teamB:"Equador 🇪🇨",        scoreA:1, scoreB:0, winner:"A", resolution:"regular", date:"2026-06-30", time:"22:00", venue:"Estadio Azteca, Cidade do México" },
+      { id:"r32-8",  teamA:"Inglaterra 🏴󠁧󠁢󠁥󠁮󠁧󠁿",   teamB:"RD Congo 🇨🇩",       scoreA:3, scoreB:0, winner:"A", resolution:"regular", date:"2026-07-01", time:"13:00", venue:"Mercedes-Benz Stadium, Atlanta" },
+      { id:"r32-9",  teamA:"Bélgica 🇧🇪",       teamB:"Senegal 🇸🇳",        scoreA:2, scoreB:1, winner:"A", resolution:"regular", date:"2026-07-01", time:"17:00", venue:"Lumen Field, Seattle" },
+      { id:"r32-10", teamA:"EUA 🇺🇸",           teamB:"Bósnia 🇧🇦",         scoreA:2, scoreB:0, winner:"A", resolution:"regular", date:"2026-07-01", time:"21:00", venue:"Levi's Stadium, Santa Clara" },
+      { id:"r32-11", teamA:"Espanha 🇪🇸",       teamB:"Áustria 🇦🇹",        scoreA:3, scoreB:1, winner:"A", resolution:"regular", date:"2026-07-02", time:"16:00", venue:"Rose Bowl, Los Angeles" },
+      { id:"r32-12", teamA:"Portugal 🇵🇹",      teamB:"Croácia 🇭🇷",        scoreA:2, scoreB:1, winner:"A", resolution:"regular", date:"2026-07-02", time:"20:00", venue:"BMO Field, Toronto" },
+      { id:"r32-13", teamA:"Suíça 🇨🇭",         teamB:"Argélia 🇩🇿",        scoreA:1, scoreB:0, winner:"A", resolution:"regular", date:"2026-07-03", time:"00:00", venue:"BC Place, Vancouver" },
+      { id:"r32-14", teamA:"Austrália 🇦🇺",     teamB:"Egito 🇪🇬",          scoreA:1, scoreB:2, winner:"B", resolution:"regular", date:"2026-07-03", time:"15:00", venue:"AT&T Stadium, Dallas" },
+      { id:"r32-15", teamA:"Argentina 🇦🇷",     teamB:"Cabo Verde 🇨🇻",     scoreA:3, scoreB:0, winner:"A", resolution:"regular", date:"2026-07-03", time:"19:00", venue:"Hard Rock Stadium, Miami" },
+      { id:"r32-16", teamA:"Colômbia 🇨🇴",      teamB:"Gana 🇬🇭",           scoreA:2, scoreB:1, winner:"A", resolution:"regular", date:"2026-07-03", time:"22:30", venue:"Arrowhead Stadium, Kansas City" },
     ],
     oitavas: [
-      { id:"oit-1", teamA:"Venc. R32-1",  teamB:"Venc. R32-2",  scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-04", time:"15:00", venue:"A definir" },
-      { id:"oit-2", teamA:"Venc. R32-3",  teamB:"Venc. R32-4",  scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-04", time:"19:00", venue:"A definir" },
-      { id:"oit-3", teamA:"Venc. R32-5",  teamB:"Venc. R32-6",  scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-05", time:"15:00", venue:"A definir" },
-      { id:"oit-4", teamA:"Venc. R32-7",  teamB:"Venc. R32-8",  scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-05", time:"19:00", venue:"A definir" },
-      { id:"oit-5", teamA:"Venc. R32-9",  teamB:"Venc. R32-10", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-06", time:"15:00", venue:"A definir" },
-      { id:"oit-6", teamA:"Venc. R32-11", teamB:"Venc. R32-12", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-06", time:"19:00", venue:"A definir" },
-      { id:"oit-7", teamA:"Venc. R32-13", teamB:"Venc. R32-14", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-07", time:"15:00", venue:"A definir" },
-      { id:"oit-8", teamA:"Venc. R32-15", teamB:"Venc. R32-16", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-07", time:"19:00", venue:"A definir" },
+      { id:"oit-1", teamA:"Canadá 🇨🇦",   teamB:"Brasil 🇧🇷",     scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-04", time:"15:00", venue:"Lincoln Financial Field, Filadélfia" },
+      { id:"oit-2", teamA:"Paraguai 🇵🇾", teamB:"Holanda 🇳🇱",    scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-04", time:"19:00", venue:"Arrowhead Stadium, Kansas City" },
+      { id:"oit-3", teamA:"Noruega 🇳🇴",  teamB:"França 🇫🇷",     scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-05", time:"15:00", venue:"SoFi Stadium, Los Angeles" },
+      { id:"oit-4", teamA:"México 🇲🇽",   teamB:"Inglaterra 🏴󠁧󠁢󠁥󠁮󠁧󠁿", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-05", time:"19:00", venue:"Estadio Azteca, Cidade do México" },
+      { id:"oit-5", teamA:"Bélgica 🇧🇪",  teamB:"EUA 🇺🇸",        scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-06", time:"15:00", venue:"Gillette Stadium, Boston" },
+      { id:"oit-6", teamA:"Espanha 🇪🇸",  teamB:"Portugal 🇵🇹",   scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-06", time:"19:00", venue:"MetLife Stadium, Nova Jersey" },
+      { id:"oit-7", teamA:"Suíça 🇨🇭",    teamB:"Egito 🇪🇬",      scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-07", time:"15:00", venue:"BC Place, Vancouver" },
+      { id:"oit-8", teamA:"Argentina 🇦🇷",teamB:"Colômbia 🇨🇴",   scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-07", time:"19:00", venue:"Hard Rock Stadium, Miami" },
     ],
     quartas: [
       { id:"qrt-1", teamA:"Venc. Oit-1", teamB:"Venc. Oit-2", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-10", time:"15:00", venue:"A definir" },
