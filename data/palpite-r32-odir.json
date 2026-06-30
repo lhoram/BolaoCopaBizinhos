@@ -1,0 +1,135 @@
+{
+  "nome": "Odir",
+  "round": "r32",
+  "timestamp": "2026-06-29T20:50:19.959Z",
+  "jogos": [
+    {
+      "id": "r32-1",
+      "teamA": "África do Sul 🇿🇦",
+      "teamB": "Canadá 🇨🇦",
+      "scoreA": 3,
+      "scoreB": 3,
+      "avanca": "Canadá 🇨🇦"
+    },
+    {
+      "id": "r32-2",
+      "teamA": "Brasil 🇧🇷",
+      "teamB": "Japão 🇯🇵",
+      "scoreA": 1,
+      "scoreB": 0,
+      "avanca": "Brasil 🇧🇷"
+    },
+    {
+      "id": "r32-3",
+      "teamA": "Alemanha 🇩🇪",
+      "teamB": "Paraguai 🇵🇾",
+      "scoreA": 0,
+      "scoreB": 3,
+      "avanca": "Paraguai 🇵🇾"
+    },
+    {
+      "id": "r32-4",
+      "teamA": "Holanda 🇳🇱",
+      "teamB": "Marrocos 🇲🇦",
+      "scoreA": 5,
+      "scoreB": 0,
+      "avanca": "Holanda 🇳🇱"
+    },
+    {
+      "id": "r32-5",
+      "teamA": "Costa do Marfim 🇨🇮",
+      "teamB": "Noruega 🇳🇴",
+      "scoreA": 1,
+      "scoreB": 0,
+      "avanca": "Costa do Marfim 🇨🇮"
+    },
+    {
+      "id": "r32-6",
+      "teamA": "França 🇫🇷",
+      "teamB": "Suécia 🇸🇪",
+      "scoreA": 0,
+      "scoreB": 0,
+      "avanca": "França 🇫🇷"
+    },
+    {
+      "id": "r32-7",
+      "teamA": "México 🇲🇽",
+      "teamB": "Equador 🇪🇨",
+      "scoreA": 0,
+      "scoreB": 0,
+      "avanca": "México 🇲🇽"
+    },
+    {
+      "id": "r32-8",
+      "teamA": "Inglaterra 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+      "teamB": "RD Congo 🇨🇩",
+      "scoreA": 10,
+      "scoreB": 0,
+      "avanca": "Inglaterra 🏴󠁧󠁢󠁥󠁮󠁧󠁿"
+    },
+    {
+      "id": "r32-9",
+      "teamA": "Bélgica 🇧🇪",
+      "teamB": "Senegal 🇸🇳",
+      "scoreA": 2,
+      "scoreB": 0,
+      "avanca": "Bélgica 🇧🇪"
+    },
+    {
+      "id": "r32-10",
+      "teamA": "EUA 🇺🇸",
+      "teamB": "Bósnia 🇧🇦",
+      "scoreA": 3,
+      "scoreB": 0,
+      "avanca": "EUA 🇺🇸"
+    },
+    {
+      "id": "r32-11",
+      "teamA": "Espanha 🇪🇸",
+      "teamB": "Áustria 🇦🇹",
+      "scoreA": 0,
+      "scoreB": 9,
+      "avanca": "Áustria 🇦🇹"
+    },
+    {
+      "id": "r32-12",
+      "teamA": "Portugal 🇵🇹",
+      "teamB": "Croácia 🇭🇷",
+      "scoreA": 1,
+      "scoreB": 0,
+      "avanca": "Portugal 🇵🇹"
+    },
+    {
+      "id": "r32-13",
+      "teamA": "Suíça 🇨🇭",
+      "teamB": "Argélia 🇩🇿",
+      "scoreA": 0,
+      "scoreB": 0,
+      "avanca": "Argélia 🇩🇿"
+    },
+    {
+      "id": "r32-14",
+      "teamA": "Austrália 🇦🇺",
+      "teamB": "Egito 🇪🇬",
+      "scoreA": 0,
+      "scoreB": 0,
+      "avanca": "Austrália 🇦🇺"
+    },
+    {
+      "id": "r32-15",
+      "teamA": "Argentina 🇦🇷",
+      "teamB": "Cabo Verde 🇨🇻",
+      "scoreA": 0,
+      "scoreB": 0,
+      "avanca": "Cabo Verde 🇨🇻"
+    },
+    {
+      "id": "r32-16",
+      "teamA": "Colômbia 🇨🇴",
+      "teamB": "Gana 🇬🇭",
+      "scoreA": 0,
+      "scoreB": 0,
+      "avanca": "Gana 🇬🇭"
+    }
+  ]
+}
