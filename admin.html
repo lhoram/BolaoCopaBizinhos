@@ -57,6 +57,18 @@
       <button class="btn btn-gold" style="margin-top:12px;width:100%" onclick="saveToken()">Salvar token</button>
     </div>
 
+    <!-- Buscar Resultados -->
+    <div class="admin-card">
+      <h3>⚽ Buscar Resultados — <span id="round-label2">...</span></h3>
+      <p style="color:var(--grey);font-size:.82rem;margin-bottom:14px">
+        Busca automaticamente da ESPN os placares dos jogos já encerrados.
+      </p>
+      <button class="btn btn-gold" style="width:100%" onclick="buscarResultados()">
+        🔄 Buscar Resultados Agora
+      </button>
+      <div id="resultados-preview" style="margin-top:14px"></div>
+    </div>
+
     <!-- Status apostas -->
     <div class="admin-card">
       <h3>📋 Apostas publicadas — <span id="round-label">...</span></h3>
@@ -186,9 +198,177 @@
       setTimeout(checkStatus, 2000);
     }
 
+    /* ── ESPN → nomes do config ────────────────────────────────────── */
+    const TEAM_MAP = {
+      'South Africa':'África do Sul 🇿🇦','Canada':'Canadá 🇨🇦',
+      'Brazil':'Brasil 🇧🇷','Japan':'Japão 🇯🇵',
+      'Germany':'Alemanha 🇩🇪','Paraguay':'Paraguai 🇵🇾',
+      'Netherlands':'Holanda 🇳🇱','Morocco':'Marrocos 🇲🇦',
+      'Ivory Coast':'Costa do Marfim 🇨🇮',"Côte d'Ivoire":'Costa do Marfim 🇨🇮',
+      'Norway':'Noruega 🇳🇴','France':'França 🇫🇷','Sweden':'Suécia 🇸🇪',
+      'Mexico':'México 🇲🇽','Ecuador':'Equador 🇪🇨',
+      'England':'Inglaterra 🏴󠁧󠁢󠁥󠁮󠁧󠁿','DR Congo':'RD Congo 🇨🇩','Congo DR':'RD Congo 🇨🇩',
+      'Belgium':'Bélgica 🇧🇪','Senegal':'Senegal 🇸🇳',
+      'United States':'EUA 🇺🇸','USA':'EUA 🇺🇸',
+      'Bosnia and Herzegovina':'Bósnia 🇧🇦','Bosnia':'Bósnia 🇧🇦',
+      'Spain':'Espanha 🇪🇸','Austria':'Áustria 🇦🇹',
+      'Portugal':'Portugal 🇵🇹','Croatia':'Croácia 🇭🇷',
+      'Switzerland':'Suíça 🇨🇭','Algeria':'Argélia 🇩🇿',
+      'Australia':'Austrália 🇦🇺','Egypt':'Egito 🇪🇬',
+      'Argentina':'Argentina 🇦🇷','Uruguay':'Uruguai 🇺🇾',
+      'Colombia':'Colômbia 🇨🇴','Ghana':'Gana 🇬🇭',
+      'Cape Verde':'Cabo Verde 🇨🇻',
+    };
+
+    async function buscarResultados() {
+      const round   = CONFIG.currentRound;
+      const matches = CONFIG.matches[round] || [];
+      const preview = document.getElementById('resultados-preview');
+
+      document.getElementById('round-label2').textContent = CONFIG.scoring[round].label;
+      preview.innerHTML = '<p style="color:var(--grey);font-size:.82rem">⏳ Buscando na ESPN...</p>';
+
+      // Range de datas da rodada
+      const datas = matches.map(m => m.date).filter(Boolean).sort();
+      const d1 = datas[0]?.replace(/-/g,'') || '20260628';
+      const d2 = datas[datas.length-1]?.replace(/-/g,'') || '20260703';
+
+      try {
+        const res = await fetch(
+          `https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard?dates=${d1}-${d2}&limit=50`
+        );
+        const data = await res.json();
+        const updates = [];
+
+        for (const ev of (data.events || [])) {
+          const comp = ev.competitions[0];
+          if (!comp.status.type.completed) continue;
+
+          const espnHome = comp.competitors[0].team.displayName;
+          const espnAway = comp.competitors[1].team.displayName;
+          const sHome = parseInt(comp.competitors[0].score) || 0;
+          const sAway = parseInt(comp.competitors[1].score) || 0;
+          const statusId = comp.status.type.id;  // 28=full,46=ET,47=pens
+          const notes    = comp.notes || [];
+
+          const cfgHome = TEAM_MAP[espnHome];
+          const cfgAway = TEAM_MAP[espnAway];
+          if (!cfgHome || !cfgAway) continue;
+
+          // Acha o jogo no config
+          const m = matches.find(m =>
+            (m.teamA === cfgHome && m.teamB === cfgAway) ||
+            (m.teamA === cfgAway && m.teamB === cfgHome)
+          );
+          if (!m) continue;
+
+          const swapped = m.teamA === cfgAway;
+          const scoreA  = swapped ? sAway : sHome;
+          const scoreB  = swapped ? sHome : sAway;
+
+          let winner, resolution;
+          if (statusId === 28) {           // tempo normal
+            resolution = 'regular';
+            winner     = scoreA > scoreB ? 'A' : 'B';
+          } else if (statusId === 47) {    // pênaltis
+            resolution = 'penalties';
+            const note = notes[0]?.headline || '';
+            const advESPN = note.split(' advance')[0].trim();
+            const advCfg  = TEAM_MAP[advESPN];
+            winner = (advCfg === m.teamA) ? 'A' : 'B';
+          } else if (statusId === 46) {    // prorrogação
+            resolution = 'extratime';
+            winner     = scoreA > scoreB ? 'A' : 'B';
+          } else { continue; }
+
+          if (m.winner === winner && m.scoreA === scoreA && m.scoreB === scoreB) continue; // já está certo
+          updates.push({ id: m.id, teamA: m.teamA, teamB: m.teamB, scoreA, scoreB, winner, resolution });
+        }
+
+        if (!updates.length) {
+          preview.innerHTML = '<p style="color:var(--green);font-size:.85rem">✅ Todos os resultados já estão atualizados!</p>';
+          return;
+        }
+
+        // Mostra preview
+        let html = `<p style="color:var(--grey);font-size:.8rem;margin-bottom:8px">${updates.length} jogo(s) para atualizar:</p>`;
+        html += '<div style="background:rgba(0,0,0,.3);border-radius:8px;padding:10px;font-size:.78rem;font-family:monospace;margin-bottom:12px">';
+        updates.forEach(u => {
+          const res = u.resolution === 'penalties' ? ' 🥅 Pênal.' : u.resolution === 'extratime' ? ' ⏱ Prorr.' : '';
+          html += `<div style="padding:3px 0;border-bottom:1px solid rgba(255,255,255,.07)">${u.teamA} <b>${u.scoreA}</b> × <b>${u.scoreB}</b> ${u.teamB} → ${u.winner === 'A' ? u.teamA : u.teamB}${res}</div>`;
+        });
+        html += '</div>';
+        html += `<button class="btn btn-gold" style="width:100%" onclick='confirmarResultados(${JSON.stringify(updates)})'>✅ Salvar resultados no GitHub</button>`;
+        preview.innerHTML = html;
+
+      } catch(e) {
+        preview.innerHTML = `<p style="color:#f87171;font-size:.82rem">❌ Erro ao buscar: ${e.message}</p>`;
+      }
+    }
+
+    async function confirmarResultados(updates) {
+      const token = getToken();
+      if (!token) { alert('Configure o token GitHub primeiro!'); return; }
+
+      // Lê config.js atual do GitHub
+      const apiUrl = `https://api.github.com/repos/${CONFIG.github.repo}/contents/js/config-2.js`;
+      const headers = { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json' };
+
+      log('Lendo config-2.js do GitHub...', true);
+      document.getElementById('pub-log').style.display = 'block';
+
+      try {
+        const getRes = await fetch(apiUrl, { headers });
+        const fileData = await getRes.json();
+        let content = decodeURIComponent(escape(atob(fileData.content.replace(/\n/g,''))));
+
+        // Aplica cada update no texto do config
+        for (const u of updates) {
+          // Acha o bloco desse jogo pelo id e substitui scoreA, scoreB, winner, resolution
+          const idPat = new RegExp(
+            `(id:"${u.id}"[^}]+?)scoreA:null([^}]+?)scoreB:null([^}]+?)winner:null([^}]+?)resolution:"[^"]*"`, 'g'
+          );
+          const replacement = `$1scoreA:${u.scoreA}$2scoreB:${u.scoreB}$3winner:"${u.winner}"$4resolution:"${u.resolution}"`;
+          const newContent = content.replace(idPat, replacement);
+          if (newContent !== content) {
+            content = newContent;
+            log(`✅ ${u.teamA} ${u.scoreA}×${u.scoreB} ${u.teamB} → atualizado`, true);
+          } else {
+            log(`⚠️ Jogo ${u.id} não encontrado no texto`, false);
+          }
+        }
+
+        // Também atualiza config.js (clone de config-2.js neste contexto)
+        const encoded = btoa(unescape(encodeURIComponent(content)));
+        const body = {
+          message: `Atualiza resultados ${CONFIG.scoring[CONFIG.currentRound].label} via admin`,
+          content: encoded, sha: fileData.sha,
+          committer: { name: 'Bolão Bot', email: 'bolao@bizinhos.com' }
+        };
+
+        await fetch(apiUrl, { method:'PUT', headers, body: JSON.stringify(body) });
+
+        // Também salva config.js (principal)
+        const configUrl = apiUrl.replace('config-2.js','config.js');
+        const getConf   = await fetch(configUrl, { headers });
+        const confData  = await getConf.json();
+        body.sha     = confData.sha;
+        body.message = body.message.replace('config-2.js','config.js');
+        await fetch(configUrl, { method:'PUT', headers, body: JSON.stringify(body) });
+
+        log('✅ GitHub atualizado! Ranking recalcula automaticamente.', true);
+        document.getElementById('resultados-preview').innerHTML =
+          '<p style="color:var(--green)">✅ Resultados publicados! O ranking já está sendo recalculado.</p>';
+
+      } catch(e) {
+        log('❌ Erro: ' + e.message, false);
+      }
+    }
+
     // Init
     window.addEventListener('DOMContentLoaded', () => {
       const saved = getToken();
+      document.getElementById('round-label2').textContent = CONFIG.scoring?.[CONFIG.currentRound]?.label || '...';
       if (saved) {
         document.getElementById('token-input').value = saved;
         showMsg('token-msg', '✅ Token salvo', true);
