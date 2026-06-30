@@ -170,15 +170,78 @@ function renderPalpites() {
   el.innerHTML = html;
 }
 
+/* ─── Pontuação automática ──────────────────────────────────────── */
+
+function calcPontos(jogos, round) {
+  const scoring  = CONFIG.scoring[round];
+  const matches  = CONFIG.matches[round] || [];
+  const byId     = {};
+  matches.forEach(m => byId[m.id] = m);
+
+  let pts = 0, vencedores = 0, exatos = 0;
+  (jogos || []).forEach(j => {
+    const m = byId[j.id];
+    if (!m || m.winner === null) return; // jogo ainda não aconteceu
+
+    const acertouVencedor = (m.winner === 'A' && j.avanca === m.teamA) ||
+                            (m.winner === 'B' && j.avanca === m.teamB);
+    const acertouPlacar   = m.scoreA !== null && m.scoreA === j.scoreA && m.scoreB === j.scoreB;
+
+    if (acertouVencedor) { pts += scoring.winner; vencedores++; }
+    if (acertouPlacar)   { pts += scoring.exact;  exatos++; }
+  });
+  return { pts, vencedores, exatos };
+}
+
+async function fetchBetsAllRounds() {
+  const repo  = CONFIG.github.repo;
+  const token = CONFIG.github.token;
+
+  // Busca os arquivos de cada participante em cada rodada (paralelo)
+  const allBets = {}; // allBets[nome][round] = jogos[]
+
+  await Promise.all(CONFIG.participants.map(async p => {
+    allBets[p.name] = {};
+    await Promise.all(CONFIG.roundOrder.map(async round => {
+      const path = `data/palpite-${round}-${p.name.toLowerCase().replace(/\s/g,'-')}.json`;
+      const url  = `https://raw.githubusercontent.com/${repo}/main/${path}?t=${Date.now()}`;
+      try {
+        const res = await fetch(url, token ? { headers: { 'Authorization': `Bearer ${token}` } } : {});
+        if (res.ok) {
+          const data = await res.json();
+          allBets[p.name][round] = data.jogos || [];
+        }
+      } catch(e) { /* sem aposta ainda */ }
+    }));
+  }));
+
+  return allBets;
+}
+
 /* ─── Ranking section ───────────────────────────────────────────── */
 
-function renderRanking() {
+async function renderRanking() {
   const el = document.getElementById('ranking-content');
   if (!el) return;
 
-  const sorted = [...CONFIG.participants]
-    .map(p => ({ ...p, total: getTotal(p) }))
-    .sort((a, b) => b.total - a.total);
+  // Mostra loading enquanto busca
+  el.innerHTML = '<p style="text-align:center;color:var(--grey);padding:40px 0">⏳ Calculando ranking...</p>';
+
+  // Busca todas as apostas do GitHub
+  const allBets = await fetchBetsAllRounds();
+
+  // Calcula pontos de cada participante por rodada
+  const sorted = CONFIG.participants.map(p => {
+    const scoresByRound = {};
+    let total = 0;
+    CONFIG.roundOrder.forEach(round => {
+      const jogos = allBets[p.name]?.[round] || [];
+      const { pts } = calcPontos(jogos, round);
+      scoresByRound[round] = pts;
+      total += pts;
+    });
+    return { ...p, scoresByRound, total };
+  }).sort((a, b) => b.total - a.total);
 
   const allZero = sorted.every(p => p.total === 0);
 
@@ -236,13 +299,17 @@ function renderRanking() {
         <td class="td-pos">${i < 3 ? medals[i] : (i + 1) + 'º'}</td>
         <td class="td-name"><span class="td-emoji">${p.emoji}</span>${p.name}</td>
         <td class="td-total">${p.total}</td>
-        ${CONFIG.roundOrder.map(r => `<td class="td-round">${p.scores[r]}</td>`).join('')}
+        ${CONFIG.roundOrder.map(r => `<td class="td-round">${p.scoresByRound[r] ?? 0}</td>`).join('')}
       </tr>
     `;
   });
   tableHtml += '</tbody></table></div>';
 
-  el.innerHTML = podiumHtml + zeroNote + tableHtml;
+  const zeroNote2 = allZero
+    ? `<p class="ranking-note">⏳ Apostas ainda não computadas ou jogos ainda não aconteceram.</p>`
+    : '';
+
+  el.innerHTML = podiumHtml + zeroNote2 + tableHtml;
 }
 
 /* ─── Bracket section ───────────────────────────────────────────── */
@@ -368,7 +435,7 @@ function renderRegras() {
     { icon:'⏱', title:'Prorrogação & Pênaltis',    desc:'O bônus de placar exato é sempre pelo placar dos 90min. Se o jogo foi para prorrogação ou pênaltis, quem acertou o empate certo (ex: 1×1) ainda recebe o bônus. O vencedor vale pontos pelo time que efetivamente passou de fase.' },
     { icon:'🏆', title:'Pontuação crescente',       desc:'Os pontos aumentam a cada fase: acertar uma Semifinal vale muito mais do que acertar a Rodada das 32. Quem subestimar as fases finais fica para trás.' },
     { icon:'🤝', title:'Critério de desempate',     desc:'Em caso de empate total: 1º) mais placares exatos; 2º) mais vencedores corretos nas fases finais; 3º) ordem alfabética (só para não deixar empatado).' },
-    { icon:'📊', title:'Atualização do ranking',    desc:'O ranking é atualizado pelo admin após a apuração de cada rodada. Pode demorar um pouquinho — calma, a transparência está garantida.' },
+    { icon:'📊', title:'Ranking automático',          desc:'O ranking é calculado automaticamente comparando seus palpites com os resultados. Assim que o admin registrar o placar de um jogo, os pontos aparecem sozinhos.' },
   ];
 
   let rulesHtml = '<div class="regras-block"><h3 class="regras-subtitle">Regras Gerais</h3><div class="rules-grid">';
@@ -456,17 +523,17 @@ function setupTrophyParallax() {
 
 /* ─── Init ──────────────────────────────────────────────────────── */
 
-function init() {
+async function init() {
   setupPageMeta();
   setupNavScroll();
   setupMobileNav();
   createStars();
   startCountdown();
   renderPalpites();
-  renderRanking();
   renderBracket();
   renderRegras();
   setupTrophyParallax();
+  await renderRanking(); // async: busca apostas do GitHub e calcula pontos
 }
 
 document.addEventListener('DOMContentLoaded', init);
