@@ -195,9 +195,11 @@ function calcPontos(jogos, round) {
 
 async function fetchBetsAllRounds() {
   const repo  = CONFIG.github.repo;
-  const token = CONFIG.github.token;
 
   // Busca os arquivos de cada participante em cada rodada (paralelo)
+  // IMPORTANTE: raw.githubusercontent.com é um CDN público — NUNCA mandar
+  // header de Authorization aqui, isso quebra o CORS (preflight falha) e
+  // a requisição falha silenciosamente (cai no catch).
   const allBets = {}; // allBets[nome][round] = jogos[]
 
   await Promise.all(CONFIG.participants.map(async p => {
@@ -206,7 +208,7 @@ async function fetchBetsAllRounds() {
       const path = `data/palpite-${round}-${p.name.toLowerCase().replace(/\s/g,'-')}.json`;
       const url  = `https://raw.githubusercontent.com/${repo}/main/${path}?t=${Date.now()}`;
       try {
-        const res = await fetch(url, token ? { headers: { 'Authorization': `Bearer ${token}` } } : {});
+        const res = await fetch(url);
         if (res.ok) {
           const data = await res.json();
           allBets[p.name][round] = data.jogos || [];
