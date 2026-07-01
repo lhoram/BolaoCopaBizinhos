@@ -64,9 +64,9 @@ const CONFIG = {
   // ADMIN: após 27/Jun substitua "1º Grupo X" / "2º Grupo X" pelos times reais classificados
   matches: {
     oitavas: [
-      { id:"oit-1", teamA:"A definir", teamB:"A definir", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-04", time:"15:00", venue:"A definir" },
-      { id:"oit-2", teamA:"A definir", teamB:"A definir", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-04", time:"19:00", venue:"A definir" },
-      { id:"oit-3", teamA:"A definir", teamB:"A definir", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-05", time:"15:00", venue:"A definir" },
+      { id:"oit-1", teamA:"Canadá", teamB:"Marrocos", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-04", time:"14:00", venue:"Houston" },
+      { id:"oit-2", teamA:"Paraguai", teamB:"França", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-04", time:"18:00", venue:"Filadélfia" },
+      { id:"oit-3", teamA:"Brasil", teamB:"Noruega", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-05", time:"17:00", venue:"MetLife Stadium, Nova Jersey" },
       { id:"oit-4", teamA:"A definir", teamB:"A definir", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-05", time:"19:00", venue:"A definir" },
       { id:"oit-5", teamA:"A definir", teamB:"A definir", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-06", time:"15:00", venue:"A definir" },
       { id:"oit-6", teamA:"A definir", teamB:"A definir", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-06", time:"19:00", venue:"A definir" },
