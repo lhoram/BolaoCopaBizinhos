@@ -37,7 +37,7 @@ function renderInvalidLink() {
 
 /* ─── Init ──────────────────────────────────────────────────────── */
 
-function initPalpite() {
+async function initPalpite() {
   const round    = CONFIG.currentRound;
   const scoring  = CONFIG.scoring[round];
   const form     = CONFIG.forms[round];
@@ -66,10 +66,31 @@ function initPalpite() {
     } catch(e) { localStorage.removeItem(savedKey); }
   }
 
+  // Não achou no localStorage (ex: outro aparelho) — tenta buscar no GitHub
+  const remote = await fetchPalpiteGitHub(participant.name, round);
+  if (remote) {
+    localStorage.setItem(savedKey, JSON.stringify(remote));
+    app.innerHTML = renderSuccess(participant.name, round, remote.jogos, !isOpen);
+    setupShareButtons(participant.name, round, remote.jogos);
+    return;
+  }
+
   if (!isOpen) { app.innerHTML = renderClosed(scoring); return; }
 
   app.innerHTML = renderForm(scoring, matches, deadline, participant);
   setupListeners(round, matches, participant);
+}
+
+async function fetchPalpiteGitHub(nome, round) {
+  const { repo } = CONFIG.github;
+  if (!repo) return null;
+  const path = `data/palpite-${round}-${nome.toLowerCase().replace(/\s/g,'-')}.json`;
+  const url  = `https://raw.githubusercontent.com/${repo}/main/${path}?t=${Date.now()}`;
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    return await res.json();
+  } catch(e) { return null; }
 }
 
 /* ─── Render: form ──────────────────────────────────────────────── */
