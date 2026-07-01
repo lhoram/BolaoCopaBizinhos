@@ -37,6 +37,9 @@ function renderInvalidLink() {
 
 /* ─── Init ──────────────────────────────────────────────────────── */
 
+// Guarda o contexto da rodada atual para o botão "Editar palpite" poder reabrir o formulário
+let ctx = null;
+
 async function initPalpite() {
   const round    = CONFIG.currentRound;
   const scoring  = CONFIG.scoring[round];
@@ -53,6 +56,8 @@ async function initPalpite() {
   const participant = name && token ? findParticipant(name, token) : null;
 
   if (!participant) { app.innerHTML = renderInvalidLink(); return; }
+
+  ctx = { round, scoring, matches, deadline, isOpen, participant };
 
   // Se já apostou, mostra resumo (mesmo com prazo encerrado)
   const savedKey = `bolao_${round}_${participant.name}`;
@@ -81,6 +86,19 @@ async function initPalpite() {
   setupListeners(round, matches, participant);
 }
 
+/* ─── Editar palpite já enviado ─────────────────────────────────── */
+
+function editarPalpite(jogosEncoded) {
+  if (!ctx || !ctx.isOpen) return;
+  const jogos = JSON.parse(decodeURIComponent(jogosEncoded));
+  const prefill = {};
+  jogos.forEach(j => { prefill[j.id] = j; });
+  const app = document.getElementById('palpite-app');
+  app.innerHTML = renderForm(ctx.scoring, ctx.matches, ctx.deadline, ctx.participant, prefill);
+  setupListeners(ctx.round, ctx.matches, ctx.participant);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 async function fetchPalpiteGitHub(nome, round) {
   const { repo } = CONFIG.github;
   if (!repo) return null;
@@ -95,7 +113,7 @@ async function fetchPalpiteGitHub(nome, round) {
 
 /* ─── Render: form ──────────────────────────────────────────────── */
 
-function renderForm(scoring, matches, deadline, participant) {
+function renderForm(scoring, matches, deadline, participant, prefill) {
   const dlStr = deadline.toLocaleDateString('pt-BR', { day:'2-digit', month:'long' })
               + ' às ' + deadline.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
 
@@ -109,7 +127,12 @@ function renderForm(scoring, matches, deadline, participant) {
     <input type="hidden" name="participante" value="${participant.name}">
   `;
 
-  const matchesHtml = matches.map((m, i) => `
+  const matchesHtml = matches.map((m, i) => {
+    const pre = prefill && prefill[m.id];
+    const preA = pre ? pre.scoreA : '';
+    const preB = pre ? pre.scoreB : '';
+    const preAdv = pre ? (pre.avanca === m.teamA ? 'A' : (pre.avanca === m.teamB ? 'B' : null)) : null;
+    return `
     <div class="bet-card" id="bet-card-${m.id}">
       <div class="bet-card__head">
         <span class="bet-num">Jogo ${i + 1}</span>
@@ -121,13 +144,13 @@ function renderForm(scoring, matches, deadline, participant) {
         <span class="bet-team-name">${m.teamA}</span>
         <input class="bet-input" type="text" inputmode="numeric" pattern="[0-9]*"
                id="sc-${m.id}-a" name="${m.id}-a"
-               maxlength="2" placeholder="0"
+               maxlength="2" placeholder="0" value="${preA}"
                required autocomplete="off"
                data-match="${m.id}">
         <span class="bet-sep">×</span>
         <input class="bet-input" type="text" inputmode="numeric" pattern="[0-9]*"
                id="sc-${m.id}-b" name="${m.id}-b"
-               maxlength="2" placeholder="0"
+               maxlength="2" placeholder="0" value="${preB}"
                required autocomplete="off"
                data-match="${m.id}">
         <span class="bet-team-name bet-team-name--right">${m.teamB}</span>
@@ -137,17 +160,18 @@ function renderForm(scoring, matches, deadline, participant) {
         <span class="bet-advance-lbl">Quem avança?</span>
         <div class="bet-radios">
           <label class="radio-pill" id="rp-${m.id}-a">
-            <input type="radio" name="${m.id}-adv" value="A" required>
+            <input type="radio" name="${m.id}-adv" value="A" required ${preAdv === 'A' ? 'checked' : ''}>
             <span>${m.teamA}</span>
           </label>
           <label class="radio-pill" id="rp-${m.id}-b">
-            <input type="radio" name="${m.id}-adv" value="B">
+            <input type="radio" name="${m.id}-adv" value="B" ${preAdv === 'B' ? 'checked' : ''}>
             <span>${m.teamB}</span>
           </label>
         </div>
       </div>
     </div>
-  `).join('');
+  `;
+  }).join('');
 
   return `
     <section class="bet-hero">
@@ -243,6 +267,14 @@ function renderSuccess(nome, round, jogos, isPrazoEncerrado) {
           <div class="summary-list">${summaryRows}</div>
         </div>
 
+        ${isPrazoEncerrado ? '' : `
+        <div style="text-align:center;margin-bottom:20px">
+          <button class="btn btn-outline" id="btn-editar" onclick="editarPalpite('${encodeURIComponent(JSON.stringify(jogos))}')">
+            ✏️ Editar palpite
+          </button>
+        </div>
+        `}
+
         <div class="share-wrap">
           <p class="share-label">Compartilhe seus palpites no grupo:</p>
           <div class="share-btns">
@@ -315,6 +347,12 @@ function setupListeners(round, matches, participant) {
   // Rastreia quais seleções foram feitas automaticamente pelo poller
   // (distingue de seleções manuais do usuário)
   const autoSelected = new Set();
+
+  // Reflete visualmente seleções pré-preenchidas (edição de palpite existente)
+  matches.forEach(m => {
+    const current = form.querySelector(`input[name="${m.id}-adv"]:checked`);
+    if (current) highlightPills(m.id, current.value);
+  });
 
   // Verificador contínuo: a cada 300ms sincroniza "quem avança" com os placares
   setInterval(() => {
