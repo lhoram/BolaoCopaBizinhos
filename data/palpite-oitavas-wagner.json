@@ -1,46 +1,46 @@
 {
   "nome": "Wagner",
   "round": "oitavas",
-  "timestamp": "2026-07-01T14:41:50.931Z",
+  "timestamp": "2026-07-01T14:56:49.109Z",
   "jogos": [
     {
       "id": "oit-1",
       "teamA": "A definir",
       "teamB": "A definir",
-      "scoreA": 2,
-      "scoreB": 2,
+      "scoreA": 3,
+      "scoreB": 1,
       "avanca": "A definir"
     },
     {
       "id": "oit-2",
       "teamA": "A definir",
       "teamB": "A definir",
-      "scoreA": 2,
-      "scoreB": 2,
+      "scoreA": 0,
+      "scoreB": 0,
       "avanca": "A definir"
     },
     {
       "id": "oit-3",
       "teamA": "A definir",
       "teamB": "A definir",
-      "scoreA": 1,
-      "scoreB": 1,
+      "scoreA": 2,
+      "scoreB": 2,
       "avanca": "A definir"
     },
     {
       "id": "oit-4",
       "teamA": "A definir",
       "teamB": "A definir",
-      "scoreA": 1,
-      "scoreB": 1,
+      "scoreA": 0,
+      "scoreB": 0,
       "avanca": "A definir"
     },
     {
       "id": "oit-5",
       "teamA": "A definir",
       "teamB": "A definir",
-      "scoreA": 1,
-      "scoreB": 1,
+      "scoreA": 0,
+      "scoreB": 0,
       "avanca": "A definir"
     },
     {
