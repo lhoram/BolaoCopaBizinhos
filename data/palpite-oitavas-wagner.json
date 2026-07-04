@@ -1,0 +1,71 @@
+{
+  "nome": "Wagner",
+  "round": "oitavas",
+  "timestamp": "2026-07-01T16:33:29.396Z",
+  "jogos": [
+    {
+      "id": "oit-1",
+      "teamA": "Canadá",
+      "teamB": "Marrocos",
+      "scoreA": 3,
+      "scoreB": 3,
+      "avanca": "Marrocos"
+    },
+    {
+      "id": "oit-2",
+      "teamA": "Paraguai",
+      "teamB": "França",
+      "scoreA": 3,
+      "scoreB": 3,
+      "avanca": "Paraguai"
+    },
+    {
+      "id": "oit-3",
+      "teamA": "Brasil",
+      "teamB": "Noruega",
+      "scoreA": 3,
+      "scoreB": 3,
+      "avanca": "Brasil"
+    },
+    {
+      "id": "oit-4",
+      "teamA": "A definir",
+      "teamB": "A definir",
+      "scoreA": 3,
+      "scoreB": 3,
+      "avanca": "A definir"
+    },
+    {
+      "id": "oit-5",
+      "teamA": "A definir",
+      "teamB": "A definir",
+      "scoreA": 3,
+      "scoreB": 3,
+      "avanca": "A definir"
+    },
+    {
+      "id": "oit-6",
+      "teamA": "A definir",
+      "teamB": "A definir",
+      "scoreA": 3,
+      "scoreB": 3,
+      "avanca": "A definir"
+    },
+    {
+      "id": "oit-7",
+      "teamA": "A definir",
+      "teamB": "A definir",
+      "scoreA": 0,
+      "scoreB": 3,
+      "avanca": "A definir"
+    },
+    {
+      "id": "oit-8",
+      "teamA": "A definir",
+      "teamB": "A definir",
+      "scoreA": 3,
+      "scoreB": 3,
+      "avanca": "A definir"
+    }
+  ]
+}
