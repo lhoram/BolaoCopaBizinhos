@@ -1,7 +1,7 @@
 {
-  "nome": "Wagner",
+  "nome": "Isabela",
   "round": "oitavas",
-  "timestamp": "2026-07-04T12:59:02.190Z",
+  "timestamp": "2026-07-04T13:14:05.817Z",
   "jogos": [
     {
       "id": "oit-1",
@@ -16,7 +16,7 @@
       "teamA": "Paraguai",
       "teamB": "França",
       "scoreA": 0,
-      "scoreB": 2,
+      "scoreB": 3,
       "avanca": "França"
     },
     {
@@ -31,31 +31,31 @@
       "id": "oit-4",
       "teamA": "México",
       "teamB": "Inglaterra",
-      "scoreA": 2,
-      "scoreB": 2,
-      "avanca": "México"
+      "scoreA": 1,
+      "scoreB": 3,
+      "avanca": "Inglaterra"
     },
     {
       "id": "oit-5",
       "teamA": "Portugal",
       "teamB": "Espanha",
       "scoreA": 2,
-      "scoreB": 3,
-      "avanca": "Espanha"
+      "scoreB": 1,
+      "avanca": "Portugal"
     },
     {
       "id": "oit-6",
       "teamA": "Estados Unidos",
       "teamB": "Bélgica",
-      "scoreA": 1,
-      "scoreB": 1,
-      "avanca": "Bélgica"
+      "scoreA": 3,
+      "scoreB": 0,
+      "avanca": "Estados Unidos"
     },
     {
       "id": "oit-7",
       "teamA": "Argentina",
       "teamB": "Egito",
-      "scoreA": 2,
+      "scoreA": 3,
       "scoreB": 0,
       "avanca": "Argentina"
     },
@@ -64,7 +64,7 @@
       "teamA": "Suíça",
       "teamB": "Colômbia",
       "scoreA": 2,
-      "scoreB": 1,
+      "scoreB": 0,
       "avanca": "Suíça"
     }
   ]
