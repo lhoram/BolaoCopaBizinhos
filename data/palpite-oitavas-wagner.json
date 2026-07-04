@@ -1,71 +1,71 @@
 {
   "nome": "Wagner",
   "round": "oitavas",
-  "timestamp": "2026-07-01T16:33:29.396Z",
+  "timestamp": "2026-07-04T12:59:02.190Z",
   "jogos": [
     {
       "id": "oit-1",
       "teamA": "Canadá",
       "teamB": "Marrocos",
-      "scoreA": 3,
-      "scoreB": 3,
+      "scoreA": 1,
+      "scoreB": 2,
       "avanca": "Marrocos"
     },
     {
       "id": "oit-2",
       "teamA": "Paraguai",
       "teamB": "França",
-      "scoreA": 3,
-      "scoreB": 3,
-      "avanca": "Paraguai"
+      "scoreA": 0,
+      "scoreB": 2,
+      "avanca": "França"
     },
     {
       "id": "oit-3",
       "teamA": "Brasil",
       "teamB": "Noruega",
       "scoreA": 3,
-      "scoreB": 3,
+      "scoreB": 1,
       "avanca": "Brasil"
     },
     {
       "id": "oit-4",
-      "teamA": "A definir",
-      "teamB": "A definir",
-      "scoreA": 3,
-      "scoreB": 3,
-      "avanca": "A definir"
+      "teamA": "México",
+      "teamB": "Inglaterra",
+      "scoreA": 2,
+      "scoreB": 2,
+      "avanca": "México"
     },
     {
       "id": "oit-5",
-      "teamA": "A definir",
-      "teamB": "A definir",
-      "scoreA": 3,
+      "teamA": "Portugal",
+      "teamB": "Espanha",
+      "scoreA": 2,
       "scoreB": 3,
-      "avanca": "A definir"
+      "avanca": "Espanha"
     },
     {
       "id": "oit-6",
-      "teamA": "A definir",
-      "teamB": "A definir",
-      "scoreA": 3,
-      "scoreB": 3,
-      "avanca": "A definir"
+      "teamA": "Estados Unidos",
+      "teamB": "Bélgica",
+      "scoreA": 1,
+      "scoreB": 1,
+      "avanca": "Bélgica"
     },
     {
       "id": "oit-7",
-      "teamA": "A definir",
-      "teamB": "A definir",
-      "scoreA": 0,
-      "scoreB": 3,
-      "avanca": "A definir"
+      "teamA": "Argentina",
+      "teamB": "Egito",
+      "scoreA": 2,
+      "scoreB": 0,
+      "avanca": "Argentina"
     },
     {
       "id": "oit-8",
-      "teamA": "A definir",
-      "teamB": "A definir",
-      "scoreA": 3,
-      "scoreB": 3,
-      "avanca": "A definir"
+      "teamA": "Suíça",
+      "teamB": "Colômbia",
+      "scoreA": 2,
+      "scoreB": 1,
+      "avanca": "Suíça"
     }
   ]
 }
