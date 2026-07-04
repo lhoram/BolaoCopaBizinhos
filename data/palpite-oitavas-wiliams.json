@@ -1,0 +1,71 @@
+{
+  "nome": "Wiliams",
+  "round": "oitavas",
+  "timestamp": "2026-07-04T14:13:31.149Z",
+  "jogos": [
+    {
+      "id": "oit-1",
+      "teamA": "Canadá",
+      "teamB": "Marrocos",
+      "scoreA": 1,
+      "scoreB": 2,
+      "avanca": "Marrocos"
+    },
+    {
+      "id": "oit-2",
+      "teamA": "Paraguai",
+      "teamB": "França",
+      "scoreA": 0,
+      "scoreB": 3,
+      "avanca": "França"
+    },
+    {
+      "id": "oit-3",
+      "teamA": "Brasil",
+      "teamB": "Noruega",
+      "scoreA": 2,
+      "scoreB": 0,
+      "avanca": "Brasil"
+    },
+    {
+      "id": "oit-4",
+      "teamA": "México",
+      "teamB": "Inglaterra",
+      "scoreA": 2,
+      "scoreB": 1,
+      "avanca": "México"
+    },
+    {
+      "id": "oit-5",
+      "teamA": "Portugal",
+      "teamB": "Espanha",
+      "scoreA": 1,
+      "scoreB": 2,
+      "avanca": "Espanha"
+    },
+    {
+      "id": "oit-6",
+      "teamA": "Estados Unidos",
+      "teamB": "Bélgica",
+      "scoreA": 2,
+      "scoreB": 1,
+      "avanca": "Estados Unidos"
+    },
+    {
+      "id": "oit-7",
+      "teamA": "Argentina",
+      "teamB": "Egito",
+      "scoreA": 2,
+      "scoreB": 0,
+      "avanca": "Argentina"
+    },
+    {
+      "id": "oit-8",
+      "teamA": "Suíça",
+      "teamB": "Colômbia",
+      "scoreA": 0,
+      "scoreB": 1,
+      "avanca": "Colômbia"
+    }
+  ]
+}
