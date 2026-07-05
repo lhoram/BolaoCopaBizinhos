@@ -65,7 +65,7 @@ const CONFIG = {
   matches: {
     oitavas: [
       { id:"oit-1", teamA:"Canadá", teamB:"Marrocos", scoreA:0, scoreB:3, winner:"B", resolution:"regular", date:"2026-07-04", time:"14:00", venue:"Houston" },
-      { id:"oit-2", teamA:"Paraguai", teamB:"França", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-04", time:"18:00", venue:"Filadélfia" },
+      { id:"oit-2", teamA:"Paraguai", teamB:"França", scoreA:0, scoreB:1, winner:"B", resolution:"regular", date:"2026-07-04", time:"18:00", venue:"Filadélfia" },
       { id:"oit-3", teamA:"Brasil", teamB:"Noruega", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-05", time:"17:00", venue:"MetLife Stadium, Nova Jersey" },
       { id:"oit-4", teamA:"México", teamB:"Inglaterra", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-05", time:"21:00", venue:"Cidade do México" },
       { id:"oit-5", teamA:"Portugal", teamB:"Espanha", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-06", time:"16:00", venue:"Dallas" },
