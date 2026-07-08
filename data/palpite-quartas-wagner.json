@@ -1,0 +1,39 @@
+{
+  "nome": "Wagner",
+  "round": "quartas",
+  "timestamp": "2026-07-08T01:18:26.436Z",
+  "jogos": [
+    {
+      "id": "qrt-1",
+      "teamA": "França",
+      "teamB": "Marrocos",
+      "scoreA": 1,
+      "scoreB": 2,
+      "avanca": "Marrocos"
+    },
+    {
+      "id": "qrt-2",
+      "teamA": "Espanha",
+      "teamB": "Bélgica",
+      "scoreA": 2,
+      "scoreB": 0,
+      "avanca": "Espanha"
+    },
+    {
+      "id": "qrt-3",
+      "teamA": "Noruega",
+      "teamB": "Inglaterra",
+      "scoreA": 0,
+      "scoreB": 1,
+      "avanca": "Inglaterra"
+    },
+    {
+      "id": "qrt-4",
+      "teamA": "Argentina",
+      "teamB": "Suíça",
+      "scoreA": 0,
+      "scoreB": 1,
+      "avanca": "Suíça"
+    }
+  ]
+}
