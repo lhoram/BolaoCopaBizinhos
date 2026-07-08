@@ -1,0 +1,39 @@
+{
+  "nome": "João",
+  "round": "quartas",
+  "timestamp": "2026-07-08T12:23:47.099Z",
+  "jogos": [
+    {
+      "id": "qrt-1",
+      "teamA": "França",
+      "teamB": "Marrocos",
+      "scoreA": 2,
+      "scoreB": 1,
+      "avanca": "França"
+    },
+    {
+      "id": "qrt-2",
+      "teamA": "Espanha",
+      "teamB": "Bélgica",
+      "scoreA": 2,
+      "scoreB": 2,
+      "avanca": "Espanha"
+    },
+    {
+      "id": "qrt-3",
+      "teamA": "Noruega",
+      "teamB": "Inglaterra",
+      "scoreA": 2,
+      "scoreB": 1,
+      "avanca": "Noruega"
+    },
+    {
+      "id": "qrt-4",
+      "teamA": "Argentina",
+      "teamB": "Suíça",
+      "scoreA": 2,
+      "scoreB": 0,
+      "avanca": "Argentina"
+    }
+  ]
+}
