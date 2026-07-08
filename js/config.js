@@ -5,7 +5,7 @@ const CONFIG = {
 
   // Rodada atual aberta para palpites
   // Opções: "oitavas" | "quartas" | "semi" | "terceiro" | "final" | "encerrado"
-  currentRound: "oitavas",
+  currentRound: "quartas",
 
   // Pontuação por rodada
   scoring: {
@@ -20,7 +20,7 @@ const CONFIG = {
   // ADMIN: preencha a URL quando criar cada formulário
   forms: {
     oitavas:  { url: "", deadline: "2026-07-04T12:00:00" },
-    quartas:  { url: "", deadline: "2026-07-10T12:00:00" },
+    quartas:  { url: "", deadline: "2026-07-09T12:00:00" },
     semi:     { url: "", deadline: "2026-07-13T23:59:00" },
     terceiro: { url: "", deadline: "2026-07-17T23:59:00" },
     final:    { url: "", deadline: "2026-07-18T23:59:00" },
@@ -71,13 +71,13 @@ const CONFIG = {
       { id:"oit-5", teamA:"Portugal", teamB:"Espanha", scoreA:0, scoreB:1, winner:"B", resolution:"regular", date:"2026-07-06", time:"16:00", venue:"Dallas" },
       { id:"oit-6", teamA:"Estados Unidos", teamB:"Bélgica", scoreA:1, scoreB:4, winner:"B", resolution:"regular", date:"2026-07-06", time:"21:00", venue:"Lumen Field, Seattle" },
       { id:"oit-7", teamA:"Argentina", teamB:"Egito", scoreA:3, scoreB:2, winner:"A", resolution:"regular", date:"2026-07-07", time:"13:00", venue:"Atlanta" },
-      { id:"oit-8", teamA:"Suíça", teamB:"Colômbia", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-07", time:"17:00", venue:"Vancouver" },
+      { id:"oit-8", teamA:"Suíça", teamB:"Colômbia", scoreA:0, scoreB:0, winner:"A", resolution:"penalties", date:"2026-07-07", time:"17:00", venue:"Vancouver" },
     ],
     quartas: [
-      { id:"qrt-1", teamA:"Venc. Oit-1", teamB:"Venc. Oit-2", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-10", time:"15:00", venue:"A definir" },
-      { id:"qrt-2", teamA:"Venc. Oit-3", teamB:"Venc. Oit-4", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-10", time:"19:00", venue:"A definir" },
-      { id:"qrt-3", teamA:"Venc. Oit-5", teamB:"Venc. Oit-6", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-11", time:"15:00", venue:"A definir" },
-      { id:"qrt-4", teamA:"Venc. Oit-7", teamB:"Venc. Oit-8", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-11", time:"19:00", venue:"A definir" },
+      { id:"qrt-1", teamA:"França", teamB:"Marrocos", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-09", time:"17:00", venue:"Gillette Stadium, Boston" },
+      { id:"qrt-2", teamA:"Espanha", teamB:"Bélgica", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-10", time:"16:00", venue:"SoFi Stadium, Los Angeles" },
+      { id:"qrt-3", teamA:"Noruega", teamB:"Inglaterra", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-11", time:"18:00", venue:"Hard Rock Stadium, Miami" },
+      { id:"qrt-4", teamA:"Argentina", teamB:"Suíça", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-11", time:"22:00", venue:"Arrowhead Stadium, Kansas City" },
     ],
     semi: [
       { id:"semi-1", teamA:"Venc. Qrt-1", teamB:"Venc. Qrt-2", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-14", time:"19:00", venue:"MetLife Stadium, Nova York" },
