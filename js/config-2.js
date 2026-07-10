@@ -74,7 +74,7 @@ const CONFIG = {
       { id:"oit-8", teamA:"Suíça", teamB:"Colômbia", scoreA:0, scoreB:0, winner:"A", resolution:"penalties", date:"2026-07-07", time:"17:00", venue:"Vancouver" },
     ],
     quartas: [
-      { id:"qrt-1", teamA:"França", teamB:"Marrocos", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-09", time:"17:00", venue:"Gillette Stadium, Boston" },
+      { id:"qrt-1", teamA:"França", teamB:"Marrocos", scoreA:2, scoreB:0, winner:"A", resolution:"regular", date:"2026-07-09", time:"17:00", venue:"Gillette Stadium, Boston" },
       { id:"qrt-2", teamA:"Espanha", teamB:"Bélgica", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-10", time:"16:00", venue:"SoFi Stadium, Los Angeles" },
       { id:"qrt-3", teamA:"Noruega", teamB:"Inglaterra", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-11", time:"18:00", venue:"Hard Rock Stadium, Miami" },
       { id:"qrt-4", teamA:"Argentina", teamB:"Suíça", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-11", time:"22:00", venue:"Arrowhead Stadium, Kansas City" },
