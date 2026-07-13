@@ -5,7 +5,7 @@ const CONFIG = {
 
   // Rodada atual aberta para palpites
   // Opções: "oitavas" | "quartas" | "semi" | "terceiro" | "final" | "encerrado"
-  currentRound: "quartas",
+  currentRound: "semi",
 
   // Pontuação por rodada
   scoring: {
@@ -75,13 +75,13 @@ const CONFIG = {
     ],
     quartas: [
       { id:"qrt-1", teamA:"França", teamB:"Marrocos", scoreA:2, scoreB:0, winner:"A", resolution:"regular", date:"2026-07-09", time:"17:00", venue:"Gillette Stadium, Boston" },
-      { id:"qrt-2", teamA:"Espanha", teamB:"Bélgica", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-10", time:"16:00", venue:"SoFi Stadium, Los Angeles" },
-      { id:"qrt-3", teamA:"Noruega", teamB:"Inglaterra", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-11", time:"18:00", venue:"Hard Rock Stadium, Miami" },
-      { id:"qrt-4", teamA:"Argentina", teamB:"Suíça", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-11", time:"22:00", venue:"Arrowhead Stadium, Kansas City" },
+      { id:"qrt-2", teamA:"Espanha", teamB:"Bélgica", scoreA:2, scoreB:1, winner:"A", resolution:"regular", date:"2026-07-10", time:"16:00", venue:"SoFi Stadium, Los Angeles" },
+      { id:"qrt-3", teamA:"Noruega", teamB:"Inglaterra", scoreA:1, scoreB:1, winner:"B", resolution:"extratime", date:"2026-07-11", time:"18:00", venue:"Hard Rock Stadium, Miami" },
+      { id:"qrt-4", teamA:"Argentina", teamB:"Suíça", scoreA:1, scoreB:1, winner:"A", resolution:"extratime", date:"2026-07-11", time:"22:00", venue:"Arrowhead Stadium, Kansas City" },
     ],
     semi: [
-      { id:"semi-1", teamA:"Venc. Qrt-1", teamB:"Venc. Qrt-2", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-14", time:"19:00", venue:"MetLife Stadium, Nova York" },
-      { id:"semi-2", teamA:"Venc. Qrt-3", teamB:"Venc. Qrt-4", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-15", time:"19:00", venue:"Rose Bowl, Pasadena" },
+      { id:"semi-1", teamA:"França", teamB:"Espanha", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-14", time:"16:00", venue:"Dallas" },
+      { id:"semi-2", teamA:"Inglaterra", teamB:"Argentina", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-15", time:"16:00", venue:"Atlanta" },
     ],
     terceiro: [
       { id:"3rd-1", teamA:"Perd. Semi-1", teamB:"Perd. Semi-2", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-18", time:"16:00", venue:"Hard Rock Stadium, Miami" },
