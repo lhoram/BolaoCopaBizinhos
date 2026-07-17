@@ -1,0 +1,15 @@
+{
+  "nome": "Odir",
+  "round": "terceiro",
+  "timestamp": "2026-07-17T22:13:32.337Z",
+  "jogos": [
+    {
+      "id": "3rd-1",
+      "teamA": "França",
+      "teamB": "Inglaterra",
+      "scoreA": 2,
+      "scoreB": 1,
+      "avanca": "França"
+    }
+  ]
+}
