@@ -1,0 +1,23 @@
+{
+  "nome": "Odir",
+  "round": "semi",
+  "timestamp": "2026-07-13T12:47:54.281Z",
+  "jogos": [
+    {
+      "id": "semi-1",
+      "teamA": "França",
+      "teamB": "Espanha",
+      "scoreA": 2,
+      "scoreB": 1,
+      "avanca": "França"
+    },
+    {
+      "id": "semi-2",
+      "teamA": "Inglaterra",
+      "teamB": "Argentina",
+      "scoreA": 1,
+      "scoreB": 1,
+      "avanca": "Inglaterra"
+    }
+  ]
+}

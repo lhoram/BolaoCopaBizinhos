@@ -1,0 +1,23 @@
+{
+  "nome": "Isabela",
+  "round": "semi",
+  "timestamp": "2026-07-13T15:25:18.280Z",
+  "jogos": [
+    {
+      "id": "semi-1",
+      "teamA": "França",
+      "teamB": "Espanha",
+      "scoreA": 1,
+      "scoreB": 0,
+      "avanca": "França"
+    },
+    {
+      "id": "semi-2",
+      "teamA": "Inglaterra",
+      "teamB": "Argentina",
+      "scoreA": 0,
+      "scoreB": 1,
+      "avanca": "Argentina"
+    }
+  ]
+}
