@@ -5,7 +5,7 @@ const CONFIG = {
 
   // Rodada atual aberta para palpites
   // Opções: "oitavas" | "quartas" | "semi" | "terceiro" | "final" | "encerrado"
-  currentRound: "semi",
+  currentRound: "terceiro",
 
   // Pontuação por rodada
   scoring: {
@@ -80,14 +80,14 @@ const CONFIG = {
       { id:"qrt-4", teamA:"Argentina", teamB:"Suíça", scoreA:1, scoreB:1, winner:"A", resolution:"extratime", date:"2026-07-11", time:"22:00", venue:"Arrowhead Stadium, Kansas City" },
     ],
     semi: [
-      { id:"semi-1", teamA:"França", teamB:"Espanha", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-14", time:"16:00", venue:"Dallas" },
-      { id:"semi-2", teamA:"Inglaterra", teamB:"Argentina", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-15", time:"16:00", venue:"Atlanta" },
+      { id:"semi-1", teamA:"França", teamB:"Espanha", scoreA:0, scoreB:2, winner:"B", resolution:"regular", date:"2026-07-14", time:"16:00", venue:"Dallas" },
+      { id:"semi-2", teamA:"Inglaterra", teamB:"Argentina", scoreA:1, scoreB:2, winner:"B", resolution:"regular", date:"2026-07-15", time:"16:00", venue:"Atlanta" },
     ],
     terceiro: [
-      { id:"3rd-1", teamA:"Perd. Semi-1", teamB:"Perd. Semi-2", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-18", time:"16:00", venue:"Hard Rock Stadium, Miami" },
+      { id:"3rd-1", teamA:"França", teamB:"Inglaterra", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-18", time:"18:00", venue:"Hard Rock Stadium, Miami" },
     ],
     final: [
-      { id:"final-1", teamA:"Venc. Semi-1", teamB:"Venc. Semi-2", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-19", time:"16:00", venue:"MetLife Stadium, Nova York" },
+      { id:"final-1", teamA:"Espanha", teamB:"Argentina", scoreA:null, scoreB:null, winner:null, resolution:"regular", date:"2026-07-19", time:"16:00", venue:"MetLife Stadium, Nova Jersey" },
     ],
   },
 

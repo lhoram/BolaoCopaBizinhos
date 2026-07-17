@@ -1,0 +1,23 @@
+{
+  "nome": "Wagner",
+  "round": "semi",
+  "timestamp": "2026-07-13T12:00:00.000Z",
+  "jogos": [
+    {
+      "id": "semi-1",
+      "teamA": "França",
+      "teamB": "Espanha",
+      "scoreA": 1,
+      "scoreB": 2,
+      "avanca": "Espanha"
+    },
+    {
+      "id": "semi-2",
+      "teamA": "Inglaterra",
+      "teamB": "Argentina",
+      "scoreA": 2,
+      "scoreB": 1,
+      "avanca": "Inglaterra"
+    }
+  ]
+}
