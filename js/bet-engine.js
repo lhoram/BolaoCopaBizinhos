@@ -40,44 +40,72 @@ function renderInvalidLink() {
 // Guarda o contexto da rodada atual para o botão "Editar palpite" poder reabrir o formulário
 let ctx = null;
 
+// Rodadas com chaveamento definido, dentro do prazo e sem resultado ainda — podem ser apostadas
+function getBettableRounds() {
+  return CONFIG.roundOrder.filter(r => {
+    const matches = CONFIG.matches[r] || [];
+    if (!matches.length) return false;
+    const hasRealTeams = matches.every(m =>
+      !/^(Venc\.|Perd\.)/.test(m.teamA) && m.teamA !== 'A definir' &&
+      !/^(Venc\.|Perd\.)/.test(m.teamB) && m.teamB !== 'A definir'
+    );
+    const concluded = matches.every(m => m.scoreA !== null && m.scoreB !== null);
+    const form = CONFIG.forms[r];
+    const open = form && new Date(form.deadline) > new Date();
+    return hasRealTeams && !concluded && open;
+  });
+}
+
+async function findBetEntry(participant, round) {
+  const savedKey = `bolao_${round}_${participant.name}`;
+  const saved    = localStorage.getItem(savedKey);
+  if (saved) {
+    try { return JSON.parse(saved); } catch(e) { localStorage.removeItem(savedKey); }
+  }
+  const remote = await fetchPalpiteGitHub(participant.name, round);
+  if (remote) { localStorage.setItem(savedKey, JSON.stringify(remote)); return remote; }
+  return null;
+}
+
 async function initPalpite() {
-  // Valida token da URL
   const { name, token, round: roundParam } = getUrlParams();
   const participant = name && token ? findParticipant(name, token) : null;
+  const app = document.getElementById('palpite-app');
 
-  // Permite escolher a rodada via ?r=; usa a rodada atual se não vier ou for inválida
-  const round    = (roundParam && CONFIG.forms[roundParam]) ? roundParam : CONFIG.currentRound;
+  if (!participant) { app.innerHTML = renderInvalidLink(); return; }
+
+  let round, existingEntry;
+
+  if (roundParam && CONFIG.forms[roundParam]) {
+    // Link direto para uma rodada específica (?r=)
+    round = roundParam;
+    existingEntry = await findBetEntry(participant, round);
+  } else {
+    // Link padrão: percorre as rodadas abertas e para na primeira sem palpite ainda
+    const bettable = getBettableRounds();
+    round = null;
+    existingEntry = null;
+    for (const r of bettable) {
+      const entry = await findBetEntry(participant, r);
+      round = r;
+      existingEntry = entry;
+      if (!entry) break; // achou uma rodada aberta ainda sem palpite — para aqui
+    }
+    if (!round) round = CONFIG.currentRound; // nenhuma rodada aberta agora
+  }
+
   const scoring  = CONFIG.scoring[round];
   const form     = CONFIG.forms[round];
   const matches  = CONFIG.matches[round] || [];
   const deadline = new Date(form.deadline);
   const isOpen   = deadline > new Date();
-  const app      = document.getElementById('palpite-app');
 
   document.title = `Palpite — ${scoring.label} · Bolão Bizinhos`;
-
-  if (!participant) { app.innerHTML = renderInvalidLink(); return; }
-
   ctx = { round, scoring, matches, deadline, isOpen, participant };
 
-  // Se já apostou, mostra resumo (mesmo com prazo encerrado)
-  const savedKey = `bolao_${round}_${participant.name}`;
-  const saved    = localStorage.getItem(savedKey);
-  if (saved) {
-    try {
-      const entry = JSON.parse(saved);
-      app.innerHTML = renderSuccess(participant.name, round, entry.jogos, !isOpen);
-      setupShareButtons(participant.name, round, entry.jogos);
-      return;
-    } catch(e) { localStorage.removeItem(savedKey); }
-  }
-
-  // Não achou no localStorage (ex: outro aparelho) — tenta buscar no GitHub
-  const remote = await fetchPalpiteGitHub(participant.name, round);
-  if (remote) {
-    localStorage.setItem(savedKey, JSON.stringify(remote));
-    app.innerHTML = renderSuccess(participant.name, round, remote.jogos, !isOpen);
-    setupShareButtons(participant.name, round, remote.jogos);
+  if (existingEntry) {
+    app.innerHTML = renderSuccess(participant.name, round, existingEntry.jogos, !isOpen);
+    setupShareButtons(participant.name, round, existingEntry.jogos);
     return;
   }
 
@@ -465,9 +493,33 @@ function handleSubmit(form, round, matches, participant) {
   localStorage.setItem(`bolao_${round}_${nome}`, JSON.stringify(entry));
   savePalpiteGitHub(nome, round, jogos);
 
-  // 5. Show success
-  document.getElementById('palpite-app').innerHTML = renderSuccess(nome, round, jogos, false);
+  // 5. Se há outra rodada aberta ainda sem palpite, encadeia para ela; senão mostra sucesso
+  const proxima = getBettableRounds().find(r => r !== round && !localStorage.getItem(`bolao_${r}_${nome}`));
+  if (proxima) {
+    goToRound(proxima, participant, round);
+  } else {
+    document.getElementById('palpite-app').innerHTML = renderSuccess(nome, round, jogos, false);
+    setupShareButtons(nome, round, jogos);
+  }
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goToRound(round, participant, rodadaAnterior) {
+  const scoring  = CONFIG.scoring[round];
+  const form     = CONFIG.forms[round];
+  const matches  = CONFIG.matches[round] || [];
+  const deadline = new Date(form.deadline);
+  ctx = { round, scoring, matches, deadline, isOpen: true, participant };
+  document.title = `Palpite — ${scoring.label} · Bolão Bizinhos`;
+
+  const banner = rodadaAnterior ? `
+    <div class="bet-info-box" style="margin:0 auto 20px;max-width:900px">
+      ✅ <strong>${CONFIG.scoring[rodadaAnterior].label}</strong> registrado! Agora falta a <strong>${scoring.label}</strong> 👇
+    </div>
+  ` : '';
+
+  document.getElementById('palpite-app').innerHTML = banner + renderForm(scoring, matches, deadline, participant);
+  setupListeners(round, matches, participant);
 }
 
 /* ─── GitHub como backend ────────────────────────────────────────── */
