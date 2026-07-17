@@ -37,7 +37,7 @@ function renderInvalidLink() {
 
 /* ─── Init ──────────────────────────────────────────────────────── */
 
-// Guarda o contexto da rodada atual para o botão "Editar palpite" poder reabrir o formulário
+// Guarda o contexto atual (rodadas exibidas + participante) para os botões de editar/compartilhar
 let ctx = null;
 
 // Rodadas com chaveamento definido, dentro do prazo e sem resultado ainda — podem ser apostadas
@@ -56,6 +56,11 @@ function getBettableRounds() {
   });
 }
 
+function isRoundOpen(round) {
+  const form = CONFIG.forms[round];
+  return !!form && new Date(form.deadline) > new Date();
+}
+
 async function findBetEntry(participant, round) {
   const savedKey = `bolao_${round}_${participant.name}`;
   const saved    = localStorage.getItem(savedKey);
@@ -67,6 +72,12 @@ async function findBetEntry(participant, round) {
   return null;
 }
 
+function keyByMatchId(jogos) {
+  const map = {};
+  jogos.forEach(j => { map[j.id] = j; });
+  return map;
+}
+
 async function initPalpite() {
   const { name, token, round: roundParam } = getUrlParams();
   const participant = name && token ? findParticipant(name, token) : null;
@@ -74,57 +85,56 @@ async function initPalpite() {
 
   if (!participant) { app.innerHTML = renderInvalidLink(); return; }
 
-  let round, existingEntry;
-
+  // Link direto para uma rodada específica (?r=) ou, no padrão, todas as rodadas
+  // com chaveamento definido e dentro do prazo aparecem juntas na mesma página
+  let rounds;
   if (roundParam && CONFIG.forms[roundParam]) {
-    // Link direto para uma rodada específica (?r=)
-    round = roundParam;
-    existingEntry = await findBetEntry(participant, round);
+    rounds = [roundParam];
   } else {
-    // Link padrão: percorre as rodadas abertas e para na primeira sem palpite ainda
     const bettable = getBettableRounds();
-    round = null;
-    existingEntry = null;
-    for (const r of bettable) {
-      const entry = await findBetEntry(participant, r);
-      round = r;
-      existingEntry = entry;
-      if (!entry) break; // achou uma rodada aberta ainda sem palpite — para aqui
-    }
-    if (!round) round = CONFIG.currentRound; // nenhuma rodada aberta agora
+    rounds = bettable.length ? bettable : [CONFIG.currentRound];
   }
 
-  const scoring  = CONFIG.scoring[round];
-  const form     = CONFIG.forms[round];
-  const matches  = CONFIG.matches[round] || [];
-  const deadline = new Date(form.deadline);
-  const isOpen   = deadline > new Date();
+  document.title = rounds.length === 1
+    ? `Palpite — ${CONFIG.scoring[rounds[0]].label} · Bolão Bizinhos`
+    : `Palpite — Bolão Bizinhos`;
 
-  document.title = `Palpite — ${scoring.label} · Bolão Bizinhos`;
-  ctx = { round, scoring, matches, deadline, isOpen, participant };
+  const entryByRound = {};
+  for (const r of rounds) {
+    entryByRound[r] = await findBetEntry(participant, r);
+  }
 
-  if (existingEntry) {
-    app.innerHTML = renderSuccess(participant.name, round, existingEntry.jogos, !isOpen);
-    setupShareButtons(participant.name, round, existingEntry.jogos);
+  ctx = { rounds, participant };
+
+  const allAnswered = rounds.every(r => entryByRound[r]);
+  const anyOpen     = rounds.some(r => isRoundOpen(r));
+
+  if (allAnswered) {
+    const jogosByRound = {};
+    rounds.forEach(r => { jogosByRound[r] = entryByRound[r].jogos; });
+    app.innerHTML = renderMultiSuccess(participant.name, rounds, jogosByRound, { justSubmitted: false, anyOpen });
     return;
   }
 
-  if (!isOpen) { app.innerHTML = renderClosed(scoring); return; }
+  if (!anyOpen) { app.innerHTML = renderClosed(CONFIG.scoring[rounds[0]]); return; }
 
-  app.innerHTML = renderForm(scoring, matches, deadline, participant);
-  setupListeners(round, matches, participant);
+  const prefillByRound = {};
+  rounds.forEach(r => { if (entryByRound[r]) prefillByRound[r] = keyByMatchId(entryByRound[r].jogos); });
+
+  app.innerHTML = renderMultiForm(rounds, participant, prefillByRound);
+  setupListenersMulti(rounds, participant);
 }
 
 /* ─── Editar palpite já enviado ─────────────────────────────────── */
 
-function editarPalpite(jogosEncoded) {
-  if (!ctx || !ctx.isOpen) return;
-  const jogos = JSON.parse(decodeURIComponent(jogosEncoded));
-  const prefill = {};
-  jogos.forEach(j => { prefill[j.id] = j; });
+function editarMulti(dataEncoded) {
+  if (!ctx) return;
+  const data = JSON.parse(decodeURIComponent(dataEncoded)); // [{ round, jogos }, ...]
+  const prefillByRound = {};
+  data.forEach(d => { prefillByRound[d.round] = keyByMatchId(d.jogos); });
   const app = document.getElementById('palpite-app');
-  app.innerHTML = renderForm(ctx.scoring, ctx.matches, ctx.deadline, ctx.participant, prefill);
-  setupListeners(ctx.round, ctx.matches, ctx.participant);
+  app.innerHTML = renderMultiForm(ctx.rounds, ctx.participant, prefillByRound);
+  setupListenersMulti(ctx.rounds, ctx.participant);
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -140,23 +150,10 @@ async function fetchPalpiteGitHub(nome, round) {
   } catch(e) { return null; }
 }
 
-/* ─── Render: form ──────────────────────────────────────────────── */
+/* ─── Render: cards de jogo (compartilhado entre rodadas) ───────── */
 
-function renderForm(scoring, matches, deadline, participant, prefill) {
-  const dlStr = deadline.toLocaleDateString('pt-BR', { day:'2-digit', month:'long' })
-              + ' às ' + deadline.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
-
-  // Nome travado — mostra apenas o participante autenticado
-  const namesHtml = `
-    <div class="name-locked">
-      <span class="name-locked-avatar">${participant.emoji}</span>
-      <span class="name-locked-name">${participant.name}</span>
-      <span class="name-locked-badge">🔒 Identificado</span>
-    </div>
-    <input type="hidden" name="participante" value="${participant.name}">
-  `;
-
-  const matchesHtml = matches.map((m, i) => {
+function renderMatchesHtml(matches, prefill) {
+  return matches.map((m, i) => {
     const pre = prefill && prefill[m.id];
     const preA = pre ? pre.scoreA : '';
     const preB = pre ? pre.scoreB : '';
@@ -201,14 +198,48 @@ function renderForm(scoring, matches, deadline, participant, prefill) {
     </div>
   `;
   }).join('');
+}
+
+/* ─── Render: formulário (uma ou mais rodadas juntas) ───────────── */
+
+function renderMultiForm(rounds, participant, prefillByRound) {
+  const heroTitle = rounds.length === 1 ? CONFIG.scoring[rounds[0]].label : 'Seus Palpites';
+
+  const deadlinesHtml = rounds.map(r => {
+    const dl = new Date(CONFIG.forms[r].deadline);
+    const dlStr = dl.toLocaleDateString('pt-BR', { day:'2-digit', month:'long' })
+                + ' às ' + dl.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+    return `⏰ <strong>${CONFIG.scoring[r].label}</strong>: até ${dlStr}`;
+  }).join('<br>');
+
+  const namesHtml = `
+    <div class="name-locked">
+      <span class="name-locked-avatar">${participant.emoji}</span>
+      <span class="name-locked-name">${participant.name}</span>
+      <span class="name-locked-badge">🔒 Identificado</span>
+    </div>
+    <input type="hidden" name="participante" value="${participant.name}">
+  `;
+
+  const blocksHtml = rounds.map(round => {
+    const scoring = CONFIG.scoring[round];
+    const matches = CONFIG.matches[round] || [];
+    const prefill = prefillByRound[round];
+    return `
+      <div class="bet-block">
+        <h2 class="bet-block-title">⚽ ${scoring.label} — ${matches.length} jogo${matches.length > 1 ? 's' : ''}</h2>
+        <div class="bet-grid">${renderMatchesHtml(matches, prefill)}</div>
+      </div>
+    `;
+  }).join('');
 
   return `
     <section class="bet-hero">
       <div class="container">
         <a href="index.html" class="bet-back">← Voltar ao site</a>
         <div class="bet-eyebrow">Copa do Mundo 2026</div>
-        <h1 class="bet-title">${scoring.label}</h1>
-        <p class="bet-deadline">⏰ Prazo: ${dlStr}</p>
+        <h1 class="bet-title">${heroTitle}</h1>
+        <p class="bet-deadline">${deadlinesHtml}</p>
       </div>
     </section>
 
@@ -226,10 +257,7 @@ function renderForm(scoring, matches, deadline, participant, prefill) {
             Se você acha que vai para prorrogação ou pênaltis, coloque o placar empatado e escolha quem passa.
           </div>
 
-          <div class="bet-block">
-            <h2 class="bet-block-title">⚽ ${scoring.label} — ${matches.length} jogos</h2>
-            <div class="bet-grid">${matchesHtml}</div>
-          </div>
+          ${blocksHtml}
 
           <div class="bet-submit-wrap">
             <button type="submit" class="btn btn-gold bet-submit-btn">
@@ -260,30 +288,41 @@ function renderClosed(scoring) {
   `;
 }
 
-/* ─── Render: success ───────────────────────────────────────────── */
+/* ─── Render: success (uma ou mais rodadas juntas) ──────────────── */
 
-function renderSuccess(nome, round, jogos, isPrazoEncerrado) {
-  const scoring = CONFIG.scoring[round];
-  const summaryRows = jogos.map((j, i) => `
-    <div class="summary-row">
-      <span class="summary-idx">Jogo ${i + 1}</span>
-      <span class="summary-match">${j.teamA} <strong>${j.scoreA}</strong> × <strong>${j.scoreB}</strong> ${j.teamB}</span>
-      <span class="summary-adv">→ <strong>${j.avanca}</strong> avança</span>
-    </div>
-  `).join('');
+function renderMultiSuccess(nome, rounds, jogosByRound, opts) {
+  const { justSubmitted, anyOpen } = opts;
 
-  const titulo = isPrazoEncerrado
-    ? '📋 Seus palpites'
-    : '🏆 Palpite enviado!';
-  const subtitulo = isPrazoEncerrado
-    ? `Palpites registrados de <strong>${nome}</strong> — ${scoring.label}`
-    : `Boa sorte, <strong>${nome}</strong>! Que seus palpites sejam certeiros 🎯`;
+  const titulo = justSubmitted ? '🏆 Palpite enviado!' : '📋 Seus palpites';
+  const subtitulo = justSubmitted
+    ? `Boa sorte, <strong>${nome}</strong>! Que seus palpites sejam certeiros 🎯`
+    : `Palpites registrados de <strong>${nome}</strong>`;
+
+  const blocksHtml = rounds.map(round => {
+    const scoring = CONFIG.scoring[round];
+    const jogos   = jogosByRound[round];
+    const summaryRows = jogos.map((j, i) => `
+      <div class="summary-row">
+        <span class="summary-idx">Jogo ${i + 1}</span>
+        <span class="summary-match">${j.teamA} <strong>${j.scoreA}</strong> × <strong>${j.scoreB}</strong> ${j.teamB}</span>
+        <span class="summary-adv">→ <strong>${j.avanca}</strong> avança</span>
+      </div>
+    `).join('');
+    return `
+      <div class="success-card">
+        <h2 class="success-card-title">✅ ${scoring.label} — ${nome}</h2>
+        <div class="summary-list">${summaryRows}</div>
+      </div>
+    `;
+  }).join('');
+
+  const editData = encodeURIComponent(JSON.stringify(rounds.map(r => ({ round: r, jogos: jogosByRound[r] }))));
 
   return `
     <section class="bet-hero bet-hero--center">
       <div class="container">
         <a href="index.html" class="bet-back">← Voltar ao site</a>
-        <div class="success-trophy">${isPrazoEncerrado ? '📋' : '🏆'}</div>
+        <div class="success-trophy">${justSubmitted ? '🏆' : '📋'}</div>
         <h1 class="bet-title">${titulo}</h1>
         <p class="bet-deadline">${subtitulo}</p>
       </div>
@@ -291,26 +330,23 @@ function renderSuccess(nome, round, jogos, isPrazoEncerrado) {
 
     <section class="bet-section">
       <div class="container">
-        <div class="success-card">
-          <h2 class="success-card-title">✅ ${scoring.label} — ${nome}</h2>
-          <div class="summary-list">${summaryRows}</div>
-        </div>
+        ${blocksHtml}
 
-        ${isPrazoEncerrado ? '' : `
+        ${anyOpen ? `
         <div style="text-align:center;margin-bottom:20px">
-          <button class="btn btn-outline" id="btn-editar" onclick="editarPalpite('${encodeURIComponent(JSON.stringify(jogos))}')">
-            ✏️ Editar palpite
+          <button class="btn btn-outline" id="btn-editar" onclick="editarMulti('${editData}')">
+            ✏️ Editar palpites
           </button>
         </div>
-        `}
+        ` : ''}
 
         <div class="share-wrap">
           <p class="share-label">Compartilhe seus palpites no grupo:</p>
           <div class="share-btns">
-            <button class="btn btn-gold" id="btn-whatsapp" onclick="sharePalpites('${nome}', '${round}')">
+            <button class="btn btn-gold" id="btn-whatsapp" onclick="shareMulti('${nome}')">
               📱 Enviar no WhatsApp
             </button>
-            <button class="btn btn-outline" id="btn-copy" onclick="copyPalpites('${nome}', '${round}')">
+            <button class="btn btn-outline" id="btn-copy" onclick="copyMulti('${nome}')">
               📋 Copiar texto
             </button>
           </div>
@@ -325,19 +361,23 @@ function renderSuccess(nome, round, jogos, isPrazoEncerrado) {
   `;
 }
 
-function formatPalpitesText(nome, round, jogos) {
-  const scoring = CONFIG.scoring[round];
-  const linhas = jogos.map((j, i) =>
-    `Jogo ${i+1}: ${j.teamA} ${j.scoreA}×${j.scoreB} ${j.teamB} → ${j.avanca} avança`
-  ).join('\n');
-  return `🏆 Bolão Copa Bizinhos 2026\n👤 ${nome} — ${scoring.label}\n\n${linhas}`;
+function formatMultiText(nome, rounds) {
+  const blocos = rounds.map(round => {
+    const saved = localStorage.getItem(`bolao_${round}_${nome}`);
+    if (!saved) return '';
+    const { jogos } = JSON.parse(saved);
+    const scoring = CONFIG.scoring[round];
+    const linhas = jogos.map((j, i) =>
+      `Jogo ${i+1}: ${j.teamA} ${j.scoreA}×${j.scoreB} ${j.teamB} → ${j.avanca} avança`
+    ).join('\n');
+    return `📌 ${scoring.label}\n${linhas}`;
+  }).filter(Boolean).join('\n\n');
+  return `🏆 Bolão Copa Bizinhos 2026\n👤 ${nome}\n\n${blocos}`;
 }
 
-function copyPalpites(nome, round) {
-  const saved = localStorage.getItem(`bolao_${round}_${nome}`);
-  if (!saved) return;
-  const { jogos } = JSON.parse(saved);
-  const text = formatPalpitesText(nome, round, jogos);
+function copyMulti(nome) {
+  if (!ctx) return;
+  const text = formatMultiText(nome, ctx.rounds);
   navigator.clipboard.writeText(text).then(() => {
     const el = document.getElementById('copy-confirm');
     if (el) { el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 3000); }
@@ -354,38 +394,34 @@ function copyPalpites(nome, round) {
   });
 }
 
-function sharePalpites(nome, round) {
-  const saved = localStorage.getItem(`bolao_${round}_${nome}`);
-  if (!saved) return;
-  const { jogos } = JSON.parse(saved);
-  const text = formatPalpitesText(nome, round, jogos);
+function shareMulti(nome) {
+  if (!ctx) return;
+  const text = formatMultiText(nome, ctx.rounds);
   const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
   window.open(url, '_blank');
 }
 
-function setupShareButtons(nome, round, jogos) {
-  // botões já têm onclick inline no HTML, nada extra necessário
-}
-
 /* ─── Listeners ─────────────────────────────────────────────────── */
 
-function setupListeners(round, matches, participant) {
+function setupListenersMulti(rounds, participant) {
   const form = document.getElementById('bet-form');
   if (!form) return;
+
+  const allMatches = rounds.flatMap(r => CONFIG.matches[r] || []);
 
   // Rastreia quais seleções foram feitas automaticamente pelo poller
   // (distingue de seleções manuais do usuário)
   const autoSelected = new Set();
 
   // Reflete visualmente seleções pré-preenchidas (edição de palpite existente)
-  matches.forEach(m => {
+  allMatches.forEach(m => {
     const current = form.querySelector(`input[name="${m.id}-adv"]:checked`);
     if (current) highlightPills(m.id, current.value);
   });
 
   // Verificador contínuo: a cada 300ms sincroniza "quem avança" com os placares
   setInterval(() => {
-    matches.forEach(m => {
+    allMatches.forEach(m => {
       const inA = document.getElementById(`sc-${m.id}-a`);
       const inB = document.getElementById(`sc-${m.id}-b`);
       if (!inA || !inB) return;
@@ -434,7 +470,7 @@ function setupListeners(round, matches, participant) {
   // Submit
   form.addEventListener('submit', e => {
     e.preventDefault();
-    handleSubmit(form, round, matches, participant);
+    handleSubmitMulti(form, rounds, participant);
   });
 }
 
@@ -447,79 +483,59 @@ function highlightPills(matchId, winner) {
 
 /* ─── Submit ────────────────────────────────────────────────────── */
 
-function handleSubmit(form, round, matches, participant) {
+function handleSubmitMulti(form, rounds, participant) {
   const nome = participant.name;
-
-  // 2. Validate all matches (campo vazio = 0, só "quem avança" é obrigatório)
+  const jogosByRound = {};
   let errors = [];
-  matches.forEach((m, i) => {
-    const inA  = form.querySelector(`#sc-${m.id}-a`);
-    const inB  = form.querySelector(`#sc-${m.id}-b`);
-    const adv  = form.querySelector(`input[name="${m.id}-adv"]:checked`);
-    const card = document.getElementById(`bet-card-${m.id}`);
 
-    const sA = inA.value.trim() === '' ? 0 : parseInt(inA.value, 10);
-    const sB = inB.value.trim() === '' ? 0 : parseInt(inB.value, 10);
-    // Só dá erro se "quem avança" não estiver marcado
-    const hasError = isNaN(sA) || isNaN(sB) || !adv;
-    card.classList.toggle('bet-card--error', hasError);
-    if (hasError) errors.push(i + 1);
+  rounds.forEach(round => {
+    const matches = CONFIG.matches[round] || [];
+    const jogos = [];
+    matches.forEach((m, i) => {
+      const inA  = form.querySelector(`#sc-${m.id}-a`);
+      const inB  = form.querySelector(`#sc-${m.id}-b`);
+      const adv  = form.querySelector(`input[name="${m.id}-adv"]:checked`);
+      const card = document.getElementById(`bet-card-${m.id}`);
+
+      const sA = inA.value.trim() === '' ? 0 : parseInt(inA.value, 10);
+      const sB = inB.value.trim() === '' ? 0 : parseInt(inB.value, 10);
+      // Só dá erro se "quem avança" não estiver marcado
+      const hasError = isNaN(sA) || isNaN(sB) || !adv;
+      card.classList.toggle('bet-card--error', hasError);
+      if (hasError) {
+        errors.push(m.id);
+      } else {
+        jogos.push({
+          id:     m.id,
+          teamA:  m.teamA,
+          teamB:  m.teamB,
+          scoreA: sA,
+          scoreB: sB,
+          avanca: adv.value === 'A' ? m.teamA : m.teamB,
+        });
+      }
+    });
+    jogosByRound[round] = jogos;
   });
 
   if (errors.length) {
-    alert(`Atenção: selecione "quem avança" nos jogos ${errors.join(', ')}.`);
-    document.getElementById(`bet-card-${matches[errors[0]-1].id}`)
-            .scrollIntoView({ behavior: 'smooth', block: 'center' });
+    alert(`Atenção: selecione "quem avança" em todos os jogos.`);
+    document.getElementById(`bet-card-${errors[0]}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
     return;
   }
 
-  // 3. Collect palpites (campo vazio = 0)
-  const jogos = matches.map(m => {
-    const advVal = form.querySelector(`input[name="${m.id}-adv"]:checked`).value;
-    const rawA = form.querySelector(`#sc-${m.id}-a`).value.trim();
-    const rawB = form.querySelector(`#sc-${m.id}-b`).value.trim();
-    return {
-      id:     m.id,
-      teamA:  m.teamA,
-      teamB:  m.teamB,
-      scoreA: rawA === '' ? 0 : parseInt(rawA),
-      scoreB: rawB === '' ? 0 : parseInt(rawB),
-      avanca: advVal === 'A' ? m.teamA : m.teamB,
-    };
+  // Salva cada rodada localmente e no GitHub
+  rounds.forEach(round => {
+    const jogos = jogosByRound[round];
+    const entry = { nome, round, timestamp: new Date().toISOString(), jogos };
+    localStorage.setItem(`bolao_${round}_${nome}`, JSON.stringify(entry));
+    savePalpiteGitHub(nome, round, jogos);
   });
 
-  // 4. Salva localmente e no GitHub
-  const entry = { nome, round, timestamp: new Date().toISOString(), jogos };
-  localStorage.setItem(`bolao_${round}_${nome}`, JSON.stringify(entry));
-  savePalpiteGitHub(nome, round, jogos);
-
-  // 5. Se há outra rodada aberta ainda sem palpite, encadeia para ela; senão mostra sucesso
-  const proxima = getBettableRounds().find(r => r !== round && !localStorage.getItem(`bolao_${r}_${nome}`));
-  if (proxima) {
-    goToRound(proxima, participant, round);
-  } else {
-    document.getElementById('palpite-app').innerHTML = renderSuccess(nome, round, jogos, false);
-    setupShareButtons(nome, round, jogos);
-  }
+  const anyOpen = rounds.some(r => isRoundOpen(r));
+  document.getElementById('palpite-app').innerHTML =
+    renderMultiSuccess(nome, rounds, jogosByRound, { justSubmitted: true, anyOpen });
   window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function goToRound(round, participant, rodadaAnterior) {
-  const scoring  = CONFIG.scoring[round];
-  const form     = CONFIG.forms[round];
-  const matches  = CONFIG.matches[round] || [];
-  const deadline = new Date(form.deadline);
-  ctx = { round, scoring, matches, deadline, isOpen: true, participant };
-  document.title = `Palpite — ${scoring.label} · Bolão Bizinhos`;
-
-  const banner = rodadaAnterior ? `
-    <div class="bet-info-box" style="margin:0 auto 20px;max-width:900px">
-      ✅ <strong>${CONFIG.scoring[rodadaAnterior].label}</strong> registrado! Agora falta a <strong>${scoring.label}</strong> 👇
-    </div>
-  ` : '';
-
-  document.getElementById('palpite-app').innerHTML = banner + renderForm(scoring, matches, deadline, participant);
-  setupListeners(round, matches, participant);
 }
 
 /* ─── GitHub como backend ────────────────────────────────────────── */
@@ -555,10 +571,6 @@ async function savePalpiteGitHub(nome, round, jogos) {
       }),
     });
   } catch(e) { /* falha silenciosa — localStorage já salvou */ }
-}
-
-function shakeBlock(msg) {
-  alert(msg);
 }
 
 /* ─── Boot ──────────────────────────────────────────────────────── */
