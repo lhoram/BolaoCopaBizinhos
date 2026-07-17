@@ -1,0 +1,15 @@
+{
+  "nome": "Odir",
+  "round": "final",
+  "timestamp": "2026-07-17T22:13:38.071Z",
+  "jogos": [
+    {
+      "id": "final-1",
+      "teamA": "Espanha",
+      "teamB": "Argentina",
+      "scoreA": 2,
+      "scoreB": 1,
+      "avanca": "Espanha"
+    }
+  ]
+}
