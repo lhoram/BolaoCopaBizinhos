@@ -11,6 +11,21 @@ function isFormOpen(roundKey) {
   return f && new Date(f.deadline) > new Date();
 }
 
+// Times ainda não definidos ("Venc. X" / "Perd. X" / "A definir") — rodada ainda não pode ser apostada
+function roundHasRealTeams(roundKey) {
+  const matches = CONFIG.matches[roundKey] || [];
+  if (!matches.length) return false;
+  return matches.every(m =>
+    !/^(Venc\.|Perd\.)/.test(m.teamA) && m.teamA !== 'A definir' &&
+    !/^(Venc\.|Perd\.)/.test(m.teamB) && m.teamB !== 'A definir'
+  );
+}
+
+function roundIsConcluded(roundKey) {
+  const matches = CONFIG.matches[roundKey] || [];
+  return matches.length > 0 && matches.every(m => m.scoreA !== null && m.scoreB !== null);
+}
+
 function formatDate(dateStr) {
   if (!dateStr) return '';
   const [, m, d] = dateStr.split('-');
@@ -107,31 +122,31 @@ function renderPalpites() {
   let html = '<div class="rounds-grid">';
 
   CONFIG.roundOrder.forEach(roundKey => {
-    const scoring = CONFIG.scoring[roundKey];
-    const form    = CONFIG.forms[roundKey];
-    const isCur   = roundKey === currentRound;
-    const open    = isFormOpen(roundKey);
-    const hasUrl  = form.url && form.url.trim().length > 0;
-    const past    = new Date(form.deadline) < new Date();
-    const dl      = new Date(form.deadline);
-    const dlStr   = dl.toLocaleDateString('pt-BR', { day:'2-digit', month:'short' }) +
+    const scoring     = CONFIG.scoring[roundKey];
+    const form        = CONFIG.forms[roundKey];
+    const isCur       = roundKey === currentRound;
+    const concluded   = roundIsConcluded(roundKey);
+    const bettable    = !concluded && isFormOpen(roundKey) && roundHasRealTeams(roundKey);
+    const past        = new Date(form.deadline) < new Date();
+    const dl          = new Date(form.deadline);
+    const dlStr       = dl.toLocaleDateString('pt-BR', { day:'2-digit', month:'short' }) +
                     ' às ' + dl.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
     const maxPts  = scoring.winner + scoring.exact;
 
     let badge, badgeClass, btn;
 
-    if (isCur && open) {
+    if (bettable) {
       badge = '🟢 Aberto';
       badgeClass = 'badge-open';
-      btn = `<a href="palpite.html" class="btn btn-gold btn-full">⚽ Fazer Palpite Agora</a>`;
-    } else if (isCur && !open) {
-      badge = '🔴 Encerrado';
-      badgeClass = 'badge-closed';
-      btn = `<div class="btn-disabled">⏳ Aguardando apuração dos resultados...</div>`;
-    } else if (past) {
+      btn = `<a href="palpite.html?r=${roundKey}" class="btn btn-gold btn-full">⚽ Fazer Palpite Agora</a>`;
+    } else if (concluded) {
       badge = '✅ Concluído';
       badgeClass = 'badge-done';
       btn = '';
+    } else if (past) {
+      badge = '🔴 Encerrado';
+      badgeClass = 'badge-closed';
+      btn = `<div class="btn-disabled">⏳ Aguardando apuração dos resultados...</div>`;
     } else {
       badge = '🔒 Em breve';
       badgeClass = 'badge-soon';
@@ -139,7 +154,7 @@ function renderPalpites() {
     }
 
     html += `
-      <div class="round-card${isCur ? ' round-card--current' : ''}">
+      <div class="round-card${bettable ? ' round-card--current' : ''}">
         <div class="round-card__head">
           <h3 class="round-card__name">${scoring.label}</h3>
           <span class="badge ${badgeClass}">${badge}</span>
@@ -160,7 +175,7 @@ function renderPalpites() {
             <span class="pts-lbl">pts máx</span>
           </div>
         </div>
-        ${isCur ? `<p class="round-card__deadline">⏰ Prazo: ${dlStr}</p>` : ''}
+        ${bettable || (!concluded && !past) ? `<p class="round-card__deadline">⏰ Prazo: ${dlStr}</p>` : ''}
         ${btn}
       </div>
     `;

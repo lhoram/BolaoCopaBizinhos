@@ -11,7 +11,7 @@ function fmtDate(dateStr) {
 
 function getUrlParams() {
   const p = new URLSearchParams(window.location.search);
-  return { name: p.get('p'), token: p.get('t') };
+  return { name: p.get('p'), token: p.get('t'), round: p.get('r') };
 }
 
 function findParticipant(name, token) {
@@ -41,7 +41,12 @@ function renderInvalidLink() {
 let ctx = null;
 
 async function initPalpite() {
-  const round    = CONFIG.currentRound;
+  // Valida token da URL
+  const { name, token, round: roundParam } = getUrlParams();
+  const participant = name && token ? findParticipant(name, token) : null;
+
+  // Permite escolher a rodada via ?r=; usa a rodada atual se não vier ou for inválida
+  const round    = (roundParam && CONFIG.forms[roundParam]) ? roundParam : CONFIG.currentRound;
   const scoring  = CONFIG.scoring[round];
   const form     = CONFIG.forms[round];
   const matches  = CONFIG.matches[round] || [];
@@ -50,10 +55,6 @@ async function initPalpite() {
   const app      = document.getElementById('palpite-app');
 
   document.title = `Palpite — ${scoring.label} · Bolão Bizinhos`;
-
-  // Valida token da URL
-  const { name, token } = getUrlParams();
-  const participant = name && token ? findParticipant(name, token) : null;
 
   if (!participant) { app.innerHTML = renderInvalidLink(); return; }
 
