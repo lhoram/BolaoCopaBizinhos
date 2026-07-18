@@ -22,7 +22,7 @@ const CONFIG = {
     oitavas:  { url: "", deadline: "2026-07-04T12:00:00" },
     quartas:  { url: "", deadline: "2026-07-09T12:00:00" },
     semi:     { url: "", deadline: "2026-07-13T23:59:00" },
-    terceiro: { url: "", deadline: "2026-07-17T23:59:00" },
+    terceiro: { url: "", deadline: "2026-07-18T09:45:00" },
     final:    { url: "", deadline: "2026-07-18T23:59:00" },
   },
 
