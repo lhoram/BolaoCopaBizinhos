@@ -1,0 +1,15 @@
+{
+  "nome": "Isabela",
+  "round": "final",
+  "timestamp": "2026-07-18T12:24:53.997Z",
+  "jogos": [
+    {
+      "id": "final-1",
+      "teamA": "Espanha",
+      "teamB": "Argentina",
+      "scoreA": 2,
+      "scoreB": 1,
+      "avanca": "Espanha"
+    }
+  ]
+}
