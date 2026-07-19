@@ -1,0 +1,15 @@
+{
+  "nome": "Wagner",
+  "round": "terceiro",
+  "timestamp": "2026-07-18T13:15:00.000Z",
+  "jogos": [
+    {
+      "id": "3rd-1",
+      "teamA": "França",
+      "teamB": "Inglaterra",
+      "scoreA": 1,
+      "scoreB": 2,
+      "avanca": "Inglaterra"
+    }
+  ]
+}
