@@ -76,7 +76,12 @@ function createStars() {
 function startCountdown() {
   const round = CONFIG.currentRound;
   if (round === 'encerrado') {
-    setCountdownText('Copa encerrada! 🏆', null);
+    const label = document.getElementById('cd-label');
+    if (label) label.textContent = 'Copa encerrada! 🏆';
+    ['cd-d','cd-h','cd-m','cd-s'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = '00';
+    });
     return;
   }
   const form = CONFIG.forms[round];
